@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+       
+      <meta name="keywords" content="课程, code, 生活, 分享" />
+       
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Fisher线性判别推导 |  Hy&#39;s Treasure house</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Fisher线性判别推导"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Fisher线性判别推导
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/10/12/Fisher%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E6%8E%A8%E5%AF%BC/" class="article-date">
+  <time datetime="2023-10-12T02:39:20.000Z" itemprop="datePublished">2023-10-12</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">5 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>这篇文章中，我将主要以三种方式对$Fisher$判别的结果与<strong>最优解以及对应取值</strong>进行详细的推导。需要一定的<strong>多元函数微分</strong>、<strong>线性代数基础</strong>或<strong>凸优化基础</strong>。我将以不同知识背景对原问题进行解释与推导，得出正确结果。</p>
+<h4 id="问题重述"><a href="#问题重述" class="headerlink" title="问题重述"></a>问题重述</h4><p>我们的优化目标函数为：<br>$$<br>\max  J(w) &#x3D; \frac{w^TS_bw}{w^TS_ww}<br>$$</p>
+<span id="more"></span>
+
+<p>其中 $S_b$ 描述了类间关系，$S_w$ 描述的是类内关系。我们希望让<strong>类间间距尽可能远</strong>，<strong>类内关系尽可能紧密</strong>，因此我们希望 $w^TS_bw$ 尽可能大，$w^TS_ww$ 尽可能小。因此最终的优化函数按上图所示。</p>
+<h4 id="1-拉格朗日乘子法"><a href="#1-拉格朗日乘子法" class="headerlink" title="1. 拉格朗日乘子法"></a>1. 拉格朗日乘子法</h4><p>网上大部分方式都是这种证明方法，在这里做出解释并<font color='red'>提出疑问</font>。</p>
+<p>我们设 $w^TS_w{w} &#x3D; c$，则原问题变成了：<br>$$<br>\max \quad J(w) &#x3D; w^TS_bw, \quad s.t: w^TS_ww &#x3D; c<br>$$<br>运用拉格朗日乘子法：<br>$$<br>L(w, \lambda) &#x3D; w^TS_bw - \lambda (w^TS_ww - c)<br>$$<br>求极值偏导为0：<br>$$<br>\frac{\partial L(w,\lambda)}{\partial w}&#x3D;2S_bw-2\lambda S_ww&#x3D;0<br>$$<br>则：<br>$$<br>S_b w &#x3D; \lambda S_w w\to (S_w^{-1}S_b)w&#x3D;\lambda w<br>$$<br>从而：<br>$$<br>\lambda w&#x3D;S_w^{-1}S_b w&#x3D;S_w^{-1}(m_1-m_2)(m_1-m_2)^Tw&#x3D;S_w^{-1}(m_1-m_2)R<br>$$<br>所以当取到最优值时：<br>$$<br>{w}^*&#x3D;\frac R\lambda S_w^{-1}(m_1-m_2)<br>$$<br>$w$ 的方向与 $S_w^{-1}(m_1-m_2)$ 是一致的。</p>
+<p>但我也有<strong>部分疑惑</strong>：</p>
+<blockquote>
+<ol>
+<li>$w^TS_ww &#x3D; c$ 前提的设置是否有严谨的数学依据，能够<strong>保证最后得到的是最优解</strong>。</li>
+<li>$(S_w^{-1}S_b)w&#x3D;\lambda w$ 只能告诉我们 $w$ 是一个特征向量。但为什么求解后的 $w$ <strong>是唯一的</strong>？根据这个式子得出的 $w$ 应该是<strong>任意特征向量都成立</strong>，但事实<strong>只有一个是解</strong>。</li>
+</ol>
+</blockquote>
+<hr>
+<h4 id="2-直接求导法"><a href="#2-直接求导法" class="headerlink" title="2. 直接求导法"></a>2. 直接求导法</h4><p>事实上对于求极值问题，我们第一想法应该就是<strong>求导然后求极值</strong>。这个方法便按照这个思路直接进行求解。<br>$$<br>\frac{\partial J}{\partial w} &#x3D; \frac{S_bw * (w^TS_ww) - (w^TS_bw) * S_ww}{(w^TS_ww)^2}&#x3D;0<br>$$<br>我们设 $w^TS_bw &#x3D; R_1, w^TS_ww&#x3D;R_2$ ，其中 $R_1, R_2$ 为<strong>实数</strong>。则当取到极值的时候：<br>$$<br>S_bw*R_2 &#x3D; R_1 * S_ww<br>$$</p>
+<p>$$<br>\frac{R_1}{R_2}w&#x3D;(S_w^{-1}S_b)w<br>$$</p>
+<p>我们注意到$J &#x3D; R_1 &#x2F; R_2$<br>$$<br>(S_w^{-1}S_b)w&#x3D;J(w)*w<br>$$<br>通过线性代数的知识，我们可以得到：</p>
+<blockquote>
+<ol>
+<li><strong>$J$ 应该是 $S_w^{-1}S_b$ 的一个特征值。</strong></li>
+<li><strong>此时 $w$ 应该是对应特征值的特征向量。</strong></li>
+</ol>
+</blockquote>
+<p>因为我们的目标是：<br>$$<br>\max J(w)<br>$$<br>因此我们不难得出：<br>$$<br>\max \quad J(w) &#x3D; \max{\lambda_1, \lambda_2, \dots,\lambda_k}<br>$$</p>
+<p>$$<br>w &#x3D; v_{argmax{\lambda_1, \lambda_2, \dots,\lambda_k}}<br>$$</p>
+<p>所以我们得出结论：</p>
+<blockquote>
+<ol>
+<li><strong>目标函数 $\max J$ 是 $S_w^{-1}S_b$ 的最大特征值。</strong></li>
+<li><strong>取最优值时 $w$ 应该是对应最大特征值的特征向量。</strong></li>
+</ol>
+</blockquote>
+<p> $w$ 的方向可以按照第一种方法进行求解。直接求导法很好地解答了 <strong>为什么结果 $w$ 的方向一定是唯一的</strong>，因为——<strong>最优结果就是最大特征值</strong>。</p>
+<hr>
+<h4 id="3-从-w-TSw-含义入手验证上述结果"><a href="#3-从-w-TSw-含义入手验证上述结果" class="headerlink" title="3. 从$w^TSw$含义入手验证上述结果"></a>3. 从$w^TSw$含义入手验证上述结果</h4><p>让我们首先来看下 $w^TSw$ 的性质（回顾线性代数相关知识）：<br>$$<br>w^TSw &#x3D; w^T(Sw) &#x3D; a \in R<br>$$<br>所以我们不妨设：<br>$$<br>w^TSw &#x3D; w^T(Sw) &#x3D; w^T \mu w &#x3D; \mu w^Tw&#x3D;\mu k, \quad u \in R,v \in R<br>$$<br>所以 $w^TSw$ 实际上就是对 $k &#x3D; ||w||_2^2&#x3D;w^Tw$ 的一种缩放。其中 <strong>$\mu$ 为 $S$ 一特征值</strong> （$\mu &#x3D; \frac{w^TSw}{w^Tw}$）。</p>
+<p>接下来让我们回到原问题，其可以转化为：<br>$$<br>\max J &#x3D; \frac{w^TS_bw}{w^TS_ww} &#x3D; \frac{\mu_b k}{\mu_w k} &#x3D; \frac{\mu_b}{\mu_w}<br>$$<br>即目标函数转化为两<strong>矩阵 $S_b, S_w$ 特征值比值的最大值</strong>。</p>
+<p>在方法2中，我们得到的结果是 $S_w^{-1}S_b$ 的最大特征值。而：<br>$$<br>\max \lambda &#x3D; \max (\lambda_w^{-1} \lambda_b) &#x3D; \max \frac{\lambda_b}{\lambda_w} &#x3D; \frac{\mu_b}{\mu_w}<br>$$<br>因此我们进一步验证了方法2的结果是正确的——<strong>答案是 $S_w^{-1}S_b$ 的最大特征值</strong>。</p>
+<hr>
+<h4 id="4-抛砖引玉：对偶法"><a href="#4-抛砖引玉：对偶法" class="headerlink" title="4. 抛砖引玉：对偶法"></a>4. 抛砖引玉：对偶法</h4><p>首先给出参考连接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/50823110">非线性规划：拉格朗日对偶 - 知乎 (zhihu.com)</a>。鸣谢 $zdc$ 的帮助。</p>
+<p>首先介绍拉格朗日对偶。设原问题为：</p>
+<p>$$<br>(L)\min_x \quad f_0(x)<br>$$</p>
+<p>$$<br>s.t.\quad f_i(x)\leq0,i&#x3D;1,2,\ldots,m;\quad h_j(x)&#x3D;0,j&#x3D;1,2,\ldots,p<br>$$</p>
+<p>从而构造拉格朗日函数：<br>$$<br>L(x,\lambda,\nu)&#x3D;f_0(x)+\sum_{i&#x3D;1}^m\lambda_if_i(x)+\sum_{i&#x3D;1}^p\nu_ih_i(x),<br>$$<br>其对偶形式（$inf$ 符号表示取下确界。）：<br>$$<br>\max g(\lambda,\nu)&#x3D;\inf_{x}L(x,\lambda,\nu)<br>\ s.t:\lambda \geq 0<br>$$<br>我们的为似乎也可以转化成对偶再求解。还要验证原问题与对偶问题的最优解是否相同。目前我还没有完整的思路，在这里给大家<strong>抛砖引玉</strong>吧。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/10/12/Fisher%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E6%8E%A8%E5%AF%BC/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fisher%E5%88%A4%E5%88%AB/" rel="tag">Fisher判别</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ML/" rel="tag">ML</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E5%99%A8/" rel="tag">分类器</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/10/17/BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            BP神经网络
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/08/28/%E8%96%9B%E4%B9%8B%E8%B0%A6%E5%90%89%E4%BB%96%E8%B0%B1/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">薛之谦吉他谱</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.staticfile.org/valine/1.4.16/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "YQEs4iho5JeuvvyqTsOIcGUu-gzGzoHsz",
+    app_key: "NJrr8Gl5ULTBNesNuCYYbDYm",
+    path: window.location.pathname,
+    avatar: "retro",
+    placeholder: "期待您的评论！",
+    recordIP: false,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023
+        <i class="ri-heart-fill heart_icon"></i> Lucas
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hy&#39;s Treasure house"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/self_about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/blog_log">blog日志</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+ 
+<script src="/js/clickBoom2.js"></script>
+ 
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":350},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</html>

@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+       
+      <meta name="keywords" content="课程, code, 生活, 分享" />
+       
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Lab0实验报告 |  Hy&#39;s Treasure house</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Lab0实验报告"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Lab0实验报告
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/07/16/Lab0%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" class="article-date">
+  <time datetime="2023-07-16T15:27:09.000Z" itemprop="datePublished">2023-07-16</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">7 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="Lab0实验报告"><a href="#Lab0实验报告" class="headerlink" title="Lab0实验报告"></a>Lab0实验报告</h2><h3 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h3><h4 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h4><p><code>Untracked.txt</code> <span id="more"></span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">位于分支 master</span><br><span class="line"></span><br><span class="line">尚无提交</span><br><span class="line"></span><br><span class="line">未跟踪的文件:</span><br><span class="line">  （使用 <span class="string">&quot;git add &lt;文件&gt;...&quot;</span> 以包含要提交的内容）</span><br><span class="line">        README.txt</span><br><span class="line">        Untracked.txt</span><br><span class="line"></span><br><span class="line">提交为空，但是存在尚未跟踪的文件（使用 <span class="string">&quot;git add&quot;</span> 建立跟踪）</span><br></pre></td></tr></table></figure>
+
+<p><code>Stage.txt</code>，我只<code>add</code> 了 <code>README.txt</code> 这一个文件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">位于分支 master</span><br><span class="line"></span><br><span class="line">尚无提交</span><br><span class="line"></span><br><span class="line">要提交的变更：</span><br><span class="line">  （使用 <span class="string">&quot;git rm --cached &lt;文件&gt;...&quot;</span> 以取消暂存）</span><br><span class="line">        新文件：   README.txt</span><br><span class="line"></span><br><span class="line">未跟踪的文件:</span><br><span class="line">  （使用 <span class="string">&quot;git add &lt;文件&gt;...&quot;</span> 以包含要提交的内容）</span><br><span class="line">        Stage.txt</span><br><span class="line">        Untracked.txt</span><br></pre></td></tr></table></figure>
+
+<p><code>Modified.txt</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">位于分支 master</span><br><span class="line">尚未暂存以备提交的变更：</span><br><span class="line">  （使用 <span class="string">&quot;git add &lt;文件&gt;...&quot;</span> 更新要提交的内容）</span><br><span class="line">  （使用 <span class="string">&quot;git restore &lt;文件&gt;...&quot;</span> 丢弃工作区的改动）</span><br><span class="line">        修改：     README.txt</span><br><span class="line"></span><br><span class="line">未跟踪的文件:</span><br><span class="line">  （使用 <span class="string">&quot;git add &lt;文件&gt;...&quot;</span> 以包含要提交的内容）</span><br><span class="line">        Modified.txt</span><br><span class="line">        Stage.txt</span><br><span class="line">        Untracked.txt</span><br><span class="line">        </span><br><span class="line">修改尚未加入提交（使用 <span class="string">&quot;git add&quot;</span> 和/或 <span class="string">&quot;git commit -a&quot;</span>）</span><br></pre></td></tr></table></figure>
+
+<p>不一样。</p>
+<p>在刚开始创建这个文件时，并没有<code>add</code>到工作区，因此<code>git</code>对这个文件是未跟踪状态，并提示使用<code>git add</code>建立跟踪。</p>
+<p>当<code>add commit</code>一次后，因为<code>git</code>对文件已经跟踪，因此得到了修改状态。但是因为文件并未提交因此显示“尚未加入提交”。</p>
+<hr>
+<h4 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h4><p><img src="/../pic/lab01.png"></p>
+<p><code>add the file</code> 对应命令为 <code>git add</code></p>
+<p><code>stage the file</code> 对应的命令为 <code>git add</code></p>
+<p><code>commit</code> 命令队应为 <code>git commit</code></p>
+<hr>
+<h4 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h4><ol>
+<li><p><code>git checkout -- printf.c</code></p>
+</li>
+<li><p><code>git reset HEAD printf.c</code></p>
+<p><code>git checkout -- printf.c</code></p>
+</li>
+<li><p><code>git rm --cached hello.txt</code></p>
+</li>
+</ol>
+<hr>
+<h4 id="Q4"><a href="#Q4" class="headerlink" title="Q4"></a>Q4</h4><p>提交三次后的哈希值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">commit f3be5781f85bd88784d95abd40c47f0b6ccb3d19 (HEAD -&gt; master)</span><br><span class="line">Author: name &lt;<span class="number">21371240</span>@buaa.edu.cn&gt;</span><br><span class="line">Date:   Mon May <span class="number">8</span> <span class="number">23</span>:<span class="number">57</span>:<span class="number">31</span> <span class="number">2023</span> +0800</span><br><span class="line">    <span class="number">3</span></span><br><span class="line"></span><br><span class="line">commit 78e9c55534e8188525c842a59ceae3e744a40244</span><br><span class="line">Author: name &lt;<span class="number">21371240</span>@buaa.edu.cn&gt;</span><br><span class="line">Date:   Mon May <span class="number">8</span> <span class="number">23</span>:<span class="number">56</span>:<span class="number">53</span> <span class="number">2023</span> +0800</span><br><span class="line">    <span class="number">2</span></span><br><span class="line">    </span><br><span class="line">commit 97b5856f4460429e557000f2b71a1a1d4df5da9d</span><br><span class="line">Author: name &lt;<span class="number">21371240</span>@buaa.edu.cn&gt;</span><br><span class="line">Date:   Mon May <span class="number">8</span> <span class="number">23</span>:<span class="number">56</span>:<span class="number">37</span> <span class="number">2023</span> +0800</span><br><span class="line">    <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>执行<code>git reset --hard HEAD^</code>后，切换到测试2：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">commit 78e9c55534e8188525c842a59ceae3e744a40244</span><br><span class="line">Author: name &lt;<span class="number">21371240</span>@buaa.edu.cn&gt;</span><br><span class="line">Date:   Mon May <span class="number">8</span> <span class="number">23</span>:<span class="number">56</span>:<span class="number">53</span> <span class="number">2023</span> +0800</span><br><span class="line">    <span class="number">2</span></span><br><span class="line">    </span><br><span class="line">commit 97b5856f4460429e557000f2b71a1a1d4df5da9d</span><br><span class="line">Author: name &lt;<span class="number">21371240</span>@buaa.edu.cn&gt;</span><br><span class="line">Date:   Mon May <span class="number">8</span> <span class="number">23</span>:<span class="number">56</span>:<span class="number">37</span> <span class="number">2023</span> +0800</span><br><span class="line">    <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>执行<code> git reset --hard 97b5856f4460429e557000f2b71a1a1d4df5da9d</code>后，切换到测试1：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">commit 97b5856f4460429e557000f2b71a1a1d4df5da9d</span><br><span class="line">Author: name &lt;<span class="number">21371240</span>@buaa.edu.cn&gt;</span><br><span class="line">Date:   Mon May <span class="number">8</span> <span class="number">23</span>:<span class="number">56</span>:<span class="number">37</span> <span class="number">2023</span> +0800</span><br><span class="line">    <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>执行<code> git reset --hard f3be5781f85bd88784d95abd40c47f0b6ccb3d19</code>后，切换到测试3，输出与提交三次后相同。</p>
+<hr>
+<h4 id="Q5"><a href="#Q5" class="headerlink" title="Q5"></a>Q5</h4><ol>
+<li>正确。“Git 克隆的是该 Git 仓库服务器上的几乎所有数据，而不是仅仅复制完成你的工作所需要文件。 当你执行 <code>git clone</code> 命令的时候，默认配置下远程 Git 仓库中的每一个文件的每一个版本都将被拉取下来。”</li>
+<li>正确。因为全部拉取下来了，因此不需要访问远程仓库。</li>
+<li>错误。均被克隆了。</li>
+<li>正确。</li>
+</ol>
+<hr>
+<h4 id="Q6"><a href="#Q6" class="headerlink" title="Q6"></a>Q6</h4><p>运行结果为：</p>
+<p><img src="/../pic/lab02.png"></p>
+<p>能够证明<code>&gt;</code>是重定向输出，对覆盖原始内容；而<code>&gt;&gt;</code>是换行追加输出，即<code>forth</code>在<code>third</code>的下一行。</p>
+<hr>
+<h4 id="Q7"><a href="#Q7" class="headerlink" title="Q7"></a>Q7</h4><p><code>command</code>文件代码为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> Shell Start... &gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> <span class="built_in">set</span> a = 1 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> a=1 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> <span class="built_in">set</span> b = 2 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> b=2 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">set</span> c = a+b &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;c=$[$a+$b]&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;echo c = $c&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> save c to ./file1 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;echo $c&gt;file1&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> save b to ./file2 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;echo $b&gt;file2&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> save a to ./file3 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;echo $a&gt;file3&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> save file1 file2 file3 to file4 &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;cat file1&gt;file4&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;cat file2&gt;&gt;file4&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;cat file3&gt;&gt;file4&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">echo</span> file4 to ./result &gt;&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;cat file4&gt;&gt;result&#x27;</span> &gt;&gt; <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<p>得到的输出为：</p>
+<img src="../pic/lab03.png" alt="" style="zoom:67%;" />
+
+<p>再次运行<code>test</code>，得到的控制台输出与<code>result</code>文件内容为：</p>
+<p><img src="../pic/lab04.png" alt="" style="zoom: 70%;" /><img src="../pic/lab05.png" alt="" style="zoom:67%;" /></p>
+<p>在实现过程中，如果<code>echo xxx</code>不加引号的话，那么<code>echo</code>后面的参数依旧有效，即本身有特殊的意义。</p>
+<p>直接执行<code>echo echo Shell Start</code>与 <code>echo &#39;echo Shell Start&#39;</code>效果没有区别，但<code>echo echo \$c&gt;file1</code> 是把<code>echo $c</code>的内容写入file1,<code>echo &#39;echo \$c&gt;file1&#39;</code>是把echo $c&gt;file1输出到屏幕。</p>
+<img src="../pic/lab06.png" alt="" style="zoom:67%;" />
+
+<p>加了引号后，<code>echo</code>后面的内容统一变成字符串，任何内容都可输出。此时运用<code>&gt;</code> <code>&gt;&gt;</code>输出到文件即可。</p>
+<hr>
+<hr>
+<h3 id="难点分析"><a href="#难点分析" class="headerlink" title="难点分析"></a>难点分析</h3><h4 id="Ex0-1-3："><a href="#Ex0-1-3：" class="headerlink" title="Ex0.1.3："></a>Ex0.1.3：</h4><p><strong>通过指令 bash hello_os.sh AAA BBB.c，在 hello_os.sh 所处的文件夹新建一个名 为 BBB.c 的文件，其内容为 AAA 文件的第 8、32、128、512、1024 行的内容提取。</strong></p>
+<p>核心代码为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed 	-n 			-e <span class="string">&#x27;8p;32p;128p;512p;1024p&#x27;</span>    <span class="variable">$1</span> 		 &gt; 		 <span class="variable">$2</span></span><br><span class="line">命令 仅显示处理后结果  指定 	对应处理行数			被处理文件	重定向	  目标文件</span><br></pre></td></tr></table></figure>
+
+<p>考量<code>sed</code>的综合用法。</p>
+<hr>
+<h4 id="Ex0-3"><a href="#Ex0-3" class="headerlink" title="Ex0.3"></a>Ex0.3</h4><p>核心代码为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -n <span class="variable">$2</span> <span class="variable">$1</span> | awk -F: <span class="string">&#x27;&#123;print $1&#125;&#x27;</span> &gt; <span class="variable">$3</span></span><br></pre></td></tr></table></figure>
+
+<p>在这里运用了管道方法，将第一个指令的输出作为第二个的输入进行处理。</p>
+<p>前一条指令<code>grep</code>用来查找，<code>-n</code>将查找的内容行号也输出，从第一个参数文件中查找第二个参数。</p>
+<p>第二个指令输入的格式每一行为<code>number: xxxxx</code>，能注意到，行号与内容通过冒号隔开，因此只需提取冒号分割的第一个参数即可达到要求。</p>
+<p><code>awk</code>用来将刚刚得到的文本数据进行处理，<code>-F</code>来制定分隔符，在这里即是<code>:</code>，后期的指令就是将分割的第一个部分打印出来，对应着<code>&#39;&#123;print $1&#125;&#39;</code>，最后重定向到目标文件即可。</p>
+<hr>
+<h4 id="Ex04"><a href="#Ex04" class="headerlink" title="Ex04"></a>Ex04</h4><ol>
+<li><p>本任务的难点一我认为在于通过子目录调用<code>make</code>命令。</p>
+<p>我的解决方法为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -C ./code</span><br></pre></td></tr></table></figure>
+
+<p>在这里<code>-C</code>起到的作用就是切换<code>make</code>的文件夹，实现我们的<code>make</code>目标。在起初我的实验中，如果不加<code>-C</code>，即使格式为<code>make ../code</code>即在后面给号目标路径，最后并不会成功，无法成功<code>make</code>。</p>
+</li>
+<li><p>本任务难点二在于<code>.c</code>文件的编译链接。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o main.o -c main.c -I ../include/</span><br></pre></td></tr></table></figure>
+
+<p>在编译过程中，除去将<code>.c</code>编译为<code>.o</code>，要注意此时头文件信息再上一级目录。因此为了能够成功编译，要使用<code>-I</code>来调取所需的<code>include</code>。</p>
+<p>若想要得到可执行文件，需要将两个文件链接起来。这里我直接一起编译来解决这个问题。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o main.o -c main.c -I ../include/</span><br></pre></td></tr></table></figure>
+
+<p>此处更好的选择是在上一层目录来进行编译链接。</p>
+</li>
+</ol>
+<hr>
+<hr>
+<h3 id="体会与感想"><a href="#体会与感想" class="headerlink" title="体会与感想"></a>体会与感想</h3><p>本次实验对一些<code>Linux</code>指令进行了一些学习，能够进行简单的操作。但在进行复杂的操作时，我依旧需要查找资料，对参数进行进一步学习理解才能使用。</p>
+<p>对重定向有一定学习，此处内容十分常用且操作相对简单。</p>
+<p>在<code>gcc</code>中，我学到了部分参数：跨文件编译、仅编译、链接、指定输出文件名称等等。</p>
+<p>初步学会了<code>Makefile</code>的编写，体会到其便利程度。同时尝试运用<code>bash</code>批量处理文件，让我感受到其快捷预方便。</p>
+<p>总体来说<code>Lab0</code>是对基础工具的运用，整个任务都能在指导书以及网络搜索渠道来完成。我认为最大的困难不是实现，而是要知道<strong>用什么指令才能实现</strong>。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/07/16/Lab0%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BUAA/" rel="tag">BUAA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/07/17/Hi-%E5%BE%88%E9%AB%98%E5%85%B4%E8%A7%81%E5%88%B0%E4%BD%A0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Hi, 很高兴见到你
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/07/16/%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BB%93/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">信号与系统总结</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.staticfile.org/valine/1.4.16/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "YQEs4iho5JeuvvyqTsOIcGUu-gzGzoHsz",
+    app_key: "NJrr8Gl5ULTBNesNuCYYbDYm",
+    path: window.location.pathname,
+    avatar: "retro",
+    placeholder: "期待您的评论！",
+    recordIP: false,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023
+        <i class="ri-heart-fill heart_icon"></i> Lucas
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hy&#39;s Treasure house"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/self_about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/blog_log">blog日志</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+ 
+<script src="/js/clickBoom2.js"></script>
+ 
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":350},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</html>

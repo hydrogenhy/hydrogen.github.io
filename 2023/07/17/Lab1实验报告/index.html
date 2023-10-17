@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+       
+      <meta name="keywords" content="课程, code, 生活, 分享" />
+       
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Lab1实验报告 |  Hy&#39;s Treasure house</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Lab1实验报告"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Lab1实验报告
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/07/17/Lab1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" class="article-date">
+  <time datetime="2023-07-17T11:00:03.000Z" itemprop="datePublished">2023-07-17</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="Lab1实验报告"><a href="#Lab1实验报告" class="headerlink" title="Lab1实验报告"></a>Lab1实验报告</h2><h3 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h3><h4 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h4><p>实验中采用过的<code>objdump</code>为<code>objdump -DS 要反汇编的目标文件名 &gt; 导出文本文件名</code>，通过执行<code>man objdump</code>查看参数含义为：<span id="more"></span></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-D：</span><br><span class="line">disassemble the contents of all sections, not just those expected to contain instructions.</span><br><span class="line">-S:</span><br><span class="line">Display <span class="built_in">source</span> code intermixed with disassembly, <span class="keyword">if</span> possible.</span><br></pre></td></tr></table></figure>
+
+<p>发现<code>-D</code>是反汇编所有的section，<code>-S</code>为尽可能展示出反汇编汇合后的源代码。</p>
+<p>执行如下代码，其中<code>.c</code>文件是 $Hello world$ 程序：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mips-linux-gnu-gcc -c c_file.c</span><br><span class="line">mips-linux-gnu-gcc -o c_file c_file.c</span><br><span class="line">mips-linux-gnu-objdump -DS c_file.o &gt; a.txt</span><br><span class="line">mips-linux-gnu-objdump -DS c_file &gt; b.txt</span><br></pre></td></tr></table></figure>
+
+<p>得到<code>a.txt</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">c_file.o：     文件格式 elf32-tradbigmips</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disassembly of section .text:</span><br><span class="line"></span><br><span class="line">00000000 &lt;main&gt;:</span><br><span class="line">   0:   27bdffe0        addiu   sp,sp,-32</span><br><span class="line">   4:   afbe001c        sw      s8,28(sp)</span><br><span class="line">   8:   03a0f025        move    s8,sp</span><br><span class="line">   c:   24020001        li      v0,1</span><br><span class="line">  10:   afc20000        sw      v0,0(s8)</span><br><span class="line">  14:   24020002        li      v0,2</span><br><span class="line">  18:   afc20004        sw      v0,4(s8)</span><br><span class="line">  1c:   8fc30000        lw      v1,0(s8)</span><br><span class="line">  20:   8fc20004        lw      v0,4(s8)</span><br><span class="line">  24:   00621021        addu    v0,v1,v0</span><br><span class="line">  28:   afc20008        sw      v0,8(s8)</span><br><span class="line">  2c:   8fc30000        lw      v1,0(s8)</span><br><span class="line">  30:   8fc20004        lw      v0,4(s8)</span><br><span class="line">  34:   00621023        subu    v0,v1,v0</span><br><span class="line">  38:   afc2000c        sw      v0,12(s8)</span><br><span class="line">  3c:   8fc30000        lw      v1,0(s8)</span><br><span class="line">  40:   8fc20004        lw      v0,4(s8)</span><br><span class="line">  44:   70621002        mul     v0,v1,v0</span><br><span class="line">  48:   afc20010        sw      v0,16(s8)</span><br><span class="line">  4c:   8fc30000        lw      v1,0(s8)</span><br><span class="line">  50:   8fc20004        lw      v0,4(s8)</span><br><span class="line">  54:   004001f4        teq     v0,zero,0x7</span><br><span class="line">  58:   0062001a        div     zero,v1,v0</span><br><span class="line">  5c:   00001010        mfhi    v0</span><br><span class="line">  60:   00001012        mflo    v0</span><br><span class="line">  64:   afc20014        sw      v0,20(s8)</span><br><span class="line">  68:   00001025        move    v0,zero</span><br><span class="line">  6c:   03c0e825        move    sp,s8</span><br><span class="line">  70:   8fbe001c        lw      s8,28(sp)</span><br><span class="line">  74:   27bd0020        addiu   sp,sp,32</span><br><span class="line">  78:   03e00008        jr      ra</span><br><span class="line">  7c:   00000000        nop</span><br><span class="line"></span><br><span class="line">Disassembly of section .reginfo:</span><br><span class="line"></span><br><span class="line">00000000 &lt;.reginfo&gt;:</span><br><span class="line">   0:   e000000c        sc      zero,12(zero)</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">Disassembly of section .MIPS.abiflags:</span><br><span class="line"></span><br><span class="line">00000000 &lt;.MIPS.abiflags&gt;:</span><br><span class="line">   0:   00002002        srl     a0,zero,0x0</span><br><span class="line">   4:   01010005        lsa     zero,t0,at,0x1</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">Disassembly of section .pdr:</span><br><span class="line"></span><br><span class="line">00000000 &lt;.pdr&gt;:</span><br><span class="line">   0:   00000000        nop</span><br><span class="line">   4:   40000000        mfc0    zero,c0_index</span><br><span class="line">   8:   fffffffc        0xfffffffc</span><br><span class="line">        ...</span><br><span class="line">  14:   00000020        add     zero,zero,zero</span><br><span class="line">  18:   0000001e        0x1e</span><br><span class="line">  1c:   0000001f        0x1f</span><br><span class="line"></span><br><span class="line">Disassembly of section .comment:</span><br><span class="line"></span><br><span class="line">00000000 &lt;.comment&gt;:</span><br><span class="line">   0:   00474343        0x474343</span><br><span class="line">   4:   3a202855        xori    zero,s1,0x2855</span><br><span class="line">   8:   62756e74        0x62756e74</span><br><span class="line">   c:   75203130        jalx    480c4c0 &lt;main+0x480c4c0&gt;</span><br><span class="line">  10:   2e332e30        sltiu   s3,s1,11824</span><br><span class="line">  14:   2d317562        sltiu   s1,t1,30050</span><br><span class="line">  18:   756e7475        jalx    5b9d1d4 &lt;main+0x5b9d1d4&gt;</span><br><span class="line">  1c:   31292031        andi    t1,t1,0x2031</span><br><span class="line">  20:   302e332e        andi    t6,at,0x332e</span><br><span class="line">  24:   地址 0x0000000000000024 越界。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disassembly of section .gnu.attributes:</span><br><span class="line"></span><br><span class="line">00000000 &lt;.gnu.attributes&gt;:</span><br><span class="line">   0:   41000000        mftc0   zero,c0_index</span><br><span class="line">   4:   0f676e75        jal     d9db9d4 &lt;main+0xd9db9d4&gt;</span><br><span class="line">   8:   00010000        sll     </span><br></pre></td></tr></table></figure>
+
+<p>部分<code>b.txt</code>如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">c_file：     文件格式 elf32-tradbigmips</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disassembly of section .interp:</span><br><span class="line"></span><br><span class="line">00400194 &lt;.interp&gt;:</span><br><span class="line">  400194:       2f6c6962        sltiu   t4,k1,26978</span><br><span class="line">  400198:       2f6c642e        sltiu   t4,k1,25646</span><br><span class="line">  40019c:       736f2e31        0x736f2e31</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">Disassembly of section .MIPS.abiflags:</span><br><span class="line"></span><br><span class="line">004001a8 &lt;.MIPS.abiflags&gt;:</span><br><span class="line">  4001a8:       00002002        srl     a0,zero,0x0</span><br><span class="line">  4001ac:       01010005        lsa     zero,t0,at,0x1</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">Disassembly of section .reginfo:</span><br><span class="line"></span><br><span class="line">004001c0 &lt;.reginfo&gt;:</span><br><span class="line">  4001c0:       b20000f6        0xb20000f6</span><br><span class="line">        ...</span><br><span class="line">  4001d4:       00419010        0x419010</span><br><span class="line"></span><br><span class="line">Disassembly of section .note.gnu.build-id:</span><br><span class="line"></span><br><span class="line">004001d8 &lt;.note.gnu.build-id&gt;:</span><br><span class="line">  4001d8:       00000004        sllv    zero,zero,zero</span><br><span class="line">  4001dc:       00000014        0x14</span><br><span class="line">  4001e0:       00000003        sra     zero,zero,0x0</span><br><span class="line">  4001e4:       474e5500        bz.w    $w14,4155e8 &lt;_end+0x4588&gt;</span><br><span class="line">  4001e8:       2dd459bb        sltiu   s4,t6,22971</span><br><span class="line">  4001ec:       eb089062        swc2    $8,-28574(t8)</span><br><span class="line">  4001f0:       d1251b25        0xd1251b25</span><br><span class="line">  4001f4:       7ff6b1d7        0x7ff6b1d7</span><br><span class="line">  4001f8:       5b89d35a        0x5b89d35a</span><br><span class="line"></span><br><span class="line">Disassembly of section .note.ABI-tag:</span><br><span class="line"></span><br><span class="line">004001fc &lt;__abi_tag&gt;:</span><br><span class="line">  4001fc:       00000004        sllv    zero,zero,zero</span><br><span class="line">  400200:       00000010        mfhi    zero</span><br><span class="line">  400204:       00000001        movf    zero,zero,$fcc0</span><br><span class="line">  400208:       474e5500        bz.w    $w14,41560c &lt;_end+0x45ac&gt;</span><br><span class="line">  40020c:       00000000        nop</span><br><span class="line">  400210:       00000003        sra     zero,zero,0x0</span><br><span class="line">  400214:       00000002        srl     zero,zero,0x0</span><br><span class="line">  400218:       00000000        nop</span><br><span class="line"></span><br><span class="line">Disassembly of section .dynamic:</span><br><span class="line"></span><br><span class="line">0040021c &lt;_DYNAMIC&gt;:</span><br><span class="line">  40021c:       00000001        movf    zero,zero,$fcc0</span><br><span class="line">  400220:       0000003d        0x3d</span><br><span class="line">  400224:       0000000c        syscall</span><br><span class="line">  400228:       00400490        0x400490</span><br><span class="line">  40022c:       0000000d        break</span><br><span class="line">  400230:       004007b0        tge     v0,zero,0x1e</span><br><span class="line">  400234:       00000004        sllv    zero,zero,zero</span><br><span class="line">  400238:       004002fc        0x4002fc</span><br><span class="line">  40023c:       00000005        lsa     zero,zero,zero,0x1</span><br><span class="line">  400240:       004003c4        0x4003c4</span><br><span class="line">  400244:       00000006        srlv    zero,zero,zero</span><br><span class="line">  400248:       00400334        teq     v0,zero,0xc</span><br><span class="line">  40024c:       0000000a        movz    zero,zero,zero</span><br><span class="line">  400250:       00000097        0x97</span><br><span class="line">  400254:       0000000b        movn    zero,zero,zero</span><br><span class="line">  400258:       00000010        mfhi    zero</span><br><span class="line">  40025c:       70000016        udi6    zero,zero,zero,0x0</span><br><span class="line">  400260:       00411010        0x411010</span><br><span class="line">  400264:       70000035        0x70000035</span><br><span class="line">  400268:       00010dac        0x10dac</span><br><span class="line">  40026c:       00000015        0x15</span><br><span class="line">  400270:       00000000        nop</span><br><span class="line">  400274:       00000003        sra     zero,zero,0x0</span><br><span class="line">  400278:       00411020        add     v0,v0,at</span><br><span class="line">  40027c:       70000001        maddu   zero,zero</span><br><span class="line">  400280:       00000001        movf    zero,zero,$fcc0</span><br><span class="line">  400284:       70000005        msubu   zero,zero</span><br><span class="line">  400288:       00000002        srl     zero,zero,0x0</span><br><span class="line">  40028c:       70000006        0x70000006</span><br><span class="line">  400290:       00400000        0x400000</span><br><span class="line">  400294:       7000000a        0x7000000a</span><br><span class="line">  400298:       00000006        srlv    zero,zero,zero</span><br><span class="line">  40029c:       70000011        udi1    zero,zero,zero,0x0</span><br><span class="line">  4002a0:       00000009        jalr    zero,zero</span><br><span class="line">  4002a4:       70000012        udi2    zero,zero,zero,0x0</span><br><span class="line">  4002a8:       0000001d        0x1d</span><br><span class="line">  4002ac:       70000013        udi3    zero,zero,zero,0x0</span><br><span class="line">  4002b0:       00000005        lsa     zero,zero,zero,0x1</span><br><span class="line">  4002b4:       6ffffffe        0x6ffffffe</span><br><span class="line">  4002b8:       00400470        tge     v0,zero,0x11</span><br><span class="line">  4002bc:       6fffffff        0x6fffffff</span><br><span class="line">  4002c0:       00000001        movf    zero,zero,$fcc0</span><br><span class="line">  4002c4:       6ffffff0        0x6ffffff0</span><br><span class="line">  4002c8:       0040045c        0x40045c</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>链接后的代码依旧十分体积庞大。</p>
+<hr>
+<h4 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h4><p>自己编写的<code>readelf</code>并不能编译自身，并且通过实验发现若执行<code>gcc -o hello hello.c</code>后，<code>./readelf hello</code>依旧无输出。通过使用自带的<code>readelf -h</code>指令来查看信息，能够得到如下结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">% 使用MAKEFILE中的指令生成的可执行文件hello %</span><br><span class="line">ELF 头：</span><br><span class="line">  Magic：   7f 45 4c 46 01 01 01 03 00 00 00 00 00 00 00 00 </span><br><span class="line">  类别:                              ELF32</span><br><span class="line">  数据:                              2 补码，小端序 (little endian)</span><br><span class="line">  Version:                           1 (current)</span><br><span class="line">  OS/ABI:                            UNIX - GNU</span><br><span class="line">  ABI 版本:                          0</span><br><span class="line">  类型:                              EXEC (可执行文件)</span><br><span class="line">  系统架构:                          Intel 80386</span><br><span class="line">  版本:                              0x1</span><br><span class="line">  入口点地址：               0x8049600</span><br><span class="line">  程序头起点：          52 (bytes into file)</span><br><span class="line">  Start of section headers:          746252 (bytes into file)</span><br><span class="line">  标志：             0x0</span><br><span class="line">  Size of this header:               52 (bytes)</span><br><span class="line">  Size of program headers:           32 (bytes)</span><br><span class="line">  Number of program headers:         8</span><br><span class="line">  Size of section headers:           40 (bytes)</span><br><span class="line">  Number of section headers:         35</span><br><span class="line">  Section header string table index: 34</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">% 使用gcc命令生成的可执行文件hello %</span><br><span class="line">ELF 头：</span><br><span class="line">  Magic：   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 </span><br><span class="line">  类别:                              ELF64</span><br><span class="line">  数据:                              2 补码，小端序 (little endian)</span><br><span class="line">  Version:                           1 (current)</span><br><span class="line">  OS/ABI:                            UNIX - System V</span><br><span class="line">  ABI 版本:                          0</span><br><span class="line">  类型:                              DYN (Position-Independent Executable file)</span><br><span class="line">  系统架构:                          Advanced Micro Devices X86-64</span><br><span class="line">  版本:                              0x1</span><br><span class="line">  入口点地址：               0x1060</span><br><span class="line">  程序头起点：          64 (bytes into file)</span><br><span class="line">  Start of section headers:          13976 (bytes into file)</span><br><span class="line">  标志：             0x0</span><br><span class="line">  Size of this header:               64 (bytes)</span><br><span class="line">  Size of program headers:           56 (bytes)</span><br><span class="line">  Number of program headers:         13</span><br><span class="line">  Size of section headers:           64 (bytes)</span><br><span class="line">  Number of section headers:         31</span><br><span class="line">  Section header string table index: 30</span><br></pre></td></tr></table></figure>
+
+<p>发现二者的文件类型一个为<code>ELF32</code>一个为<code>ELF64</code>。因此初步推断自己编写的只能解析<code>ELF32</code>类型的文件。</p>
+<p>因为其不能编译自身，因此查看编写的<code>readelf</code>信息如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ELF 头：</span><br><span class="line">  Magic：   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 </span><br><span class="line">  类别:                              ELF64</span><br><span class="line">  数据:                              2 补码，小端序 (little endian)</span><br><span class="line">  Version:                           1 (current)</span><br><span class="line">  OS/ABI:                            UNIX - System V</span><br><span class="line">  ABI 版本:                          0</span><br><span class="line">  类型:                              DYN (Position-Independent Executable file)</span><br><span class="line">  系统架构:                          Advanced Micro Devices X86-64</span><br><span class="line">  版本:                              0x1</span><br><span class="line">  入口点地址：               0x1180</span><br><span class="line">  程序头起点：          64 (bytes into file)</span><br><span class="line">  Start of section headers:          14488 (bytes into file)</span><br><span class="line">  标志：             0x0</span><br><span class="line">  Size of this header:               64 (bytes)</span><br><span class="line">  Size of program headers:           56 (bytes)</span><br><span class="line">  Number of program headers:         13</span><br><span class="line">  Size of section headers:           64 (bytes)</span><br><span class="line">  Number of section headers:         31</span><br><span class="line">  Section header string table index: 30</span><br></pre></td></tr></table></figure>
+
+<p>发现其依旧为<code>ELF64</code>类型。因此验证了上述猜想——我们编写的 <code>readelf</code> 程序无法解析<code>ELF64</code>类型文件。</p>
+<hr>
+<h4 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h4><p>在内核启动时，首先进行硬件设备初始化，通过<code>ROM</code>中的<code>bootloader</code>执行。在第二阶段中，在<code>ROM</code>中初始化，读取载入内核。此时要执行引导程序，它能够将内核载入内存并跳转，从而保证内核入库能够被正确跳转到。</p>
+<hr>
+<hr>
+<h3 id="实验难点"><a href="#实验难点" class="headerlink" title="实验难点"></a>实验难点</h3><ol>
+<li><p><code>shdr</code>的计算</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shdr = (Elf32_Shdr *)(binary + ehdr-&gt;e_shoff + i * sh_entry_size);</span><br></pre></td></tr></table></figure>
+
+<p>基地址加上<code>ehdr-&gt;e_shoff</code>，得到整个<code>section</code>的头地址，再加上偏移<code>i</code>个<code>section</code>得到每一个段对应的首地址。</p>
+<p>值得注意的是，数据类型要转换成<code>Shdr</code>的指针。尽管指针指向的地址都是一些数字，但是因为数据类型不同，因此对地址的结息方式不同，因此一定要转化数据类型。</p>
+</li>
+</ol>
+<hr>
+<ol start="2">
+<li><p>将节装填到对应位置</p>
+<p>通过阅读内存布局图，能够找到<code>text</code>的基地址为<code>0x80010000</code>，在找到这个位置后，后续的<code>data</code>以及<code>bss</code>顺序分配空间即可。</p>
+<p><img src="/pic/lab11.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">. = 0x80010000 ;</span><br><span class="line">.text : &#123; *(.text) &#125;</span><br><span class="line">.data : &#123; *(.data) &#125;</span><br><span class="line">.bss : &#123; *(.bss) &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<ol start="3">
+<li><p><code>$sp</code>指针的初始位置</p>
+<p><img src="/pic/lab12.png"></p>
+<p>因此设置指向<code>0x80400000</code>即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">li sp, 0x80400000</span><br></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<ol start="4">
+<li><p>注意<code>printk()</code>参数的初始化</p>
+<p>这个不算是难点，但是很容易忽略。我在起初编写就因为没有初始化而导致输出错误，且找了很久才找到这个问题。</p>
+</li>
+</ol>
+<hr>
+<hr>
+<h3 id="心得体会"><a href="#心得体会" class="headerlink" title="心得体会"></a>心得体会</h3><p>本次<code>Lab</code>的难度我个人感觉要高于<code>Lab0</code>，知识难度以及知识内容都要难理解且更多。对我个人而言，我认为<code>printk()</code>函数是这个任务中相对简单的，可能是因为我有一定的C语言基础。</p>
+<p>而难点我认为是<code>ELF</code>结构的阅读理解。通过查看教程书中的表，理解段与节引用的地方一致但用处不同后，便能够对<code>ELF</code>有更好的认识。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/07/17/Lab1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BUAA/" rel="tag">BUAA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%AF%91/" rel="tag">编译</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/07/17/Lab2%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Lab2实验报告
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/07/17/Hi-%E5%BE%88%E9%AB%98%E5%85%B4%E8%A7%81%E5%88%B0%E4%BD%A0/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Hi, 很高兴见到你</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.staticfile.org/valine/1.4.16/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "YQEs4iho5JeuvvyqTsOIcGUu-gzGzoHsz",
+    app_key: "NJrr8Gl5ULTBNesNuCYYbDYm",
+    path: window.location.pathname,
+    avatar: "retro",
+    placeholder: "期待您的评论！",
+    recordIP: false,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023
+        <i class="ri-heart-fill heart_icon"></i> Lucas
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hy&#39;s Treasure house"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/self_about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/blog_log">blog日志</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+ 
+<script src="/js/clickBoom2.js"></script>
+ 
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":350},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</html>

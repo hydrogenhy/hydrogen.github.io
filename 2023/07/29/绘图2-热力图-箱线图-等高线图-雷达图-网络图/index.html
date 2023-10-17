@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+       
+      <meta name="keywords" content="课程, code, 生活, 分享" />
+       
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>绘图2(热力图,箱线图,等高线图,雷达图,网络图) |  Hy&#39;s Treasure house</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-绘图2-热力图-箱线图-等高线图-雷达图-网络图"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  绘图2(热力图,箱线图,等高线图,雷达图,网络图)
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/07/29/%E7%BB%98%E5%9B%BE2-%E7%83%AD%E5%8A%9B%E5%9B%BE-%E7%AE%B1%E7%BA%BF%E5%9B%BE-%E7%AD%89%E9%AB%98%E7%BA%BF%E5%9B%BE-%E9%9B%B7%E8%BE%BE%E5%9B%BE-%E7%BD%91%E7%BB%9C%E5%9B%BE/" class="article-date">
+  <time datetime="2023-07-29T02:59:03.000Z" itemprop="datePublished">2023-07-29</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python%E7%BB%98%E5%9B%BE/">python绘图</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">13 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h3 id="热力图"><a href="#热力图" class="headerlink" title="热力图"></a>热力图</h3><span id="more"></span>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">绘制热力图代码。</span></span><br><span class="line"><span class="string">常用于显示相关系数矩阵。</span></span><br><span class="line"><span class="string">1.突出关键信息：热力图通过颜色的变化来突出数据的特征和差异，帮助我们快速发现数据中的规律和趋势。</span></span><br><span class="line"><span class="string">2.可视化大规模数据：热力图适用于展示大规模数据矩阵，特别是在数据包含大量值时，热力图可以更好地展示数据的结构。</span></span><br><span class="line"><span class="string">3.探索数据关联性：热力图可以帮助我们发现数据之间的关联性和相关性，尤其在探索多变量数据时特别有用。</span></span><br><span class="line"><span class="string">4.色彩丰富：热力图的颜色映射可以选择多样，可以根据数据类型和需要选择合适的颜色映射，使得图像更美观和易读。</span></span><br><span class="line"><span class="string">5.一目了然：热力图通过色彩的变化和色块的大小，可以在一张图中展示大量数据，让人一目了然。</span></span><br><span class="line"><span class="string">6.强调差异：热力图的颜色变化可以有效地突出数据之间的差异和异常值，有助于快速定位问题。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 为了支持中文字体</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 上述字库没负号，因此负号不进行字体变换</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成示例数据（10x10的二维矩阵）</span></span><br><span class="line">data = np.random.randint(<span class="number">1</span>, <span class="number">10</span>, size=(<span class="number">10</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个Figure对象和一个子图</span></span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制热力图，并设置样式</span></span><br><span class="line">heatmap = ax.imshow(data, cmap=<span class="string">&#x27;hot&#x27;</span>, interpolation=<span class="string">&#x27;nearest&#x27;</span>, aspect=<span class="string">&#x27;auto&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">cmap参数设置：</span></span><br><span class="line"><span class="string">&#x27;viridis&#x27;：从蓝色到黄色渐变，用于连续数据，特别适用于数据的渐变效果。</span></span><br><span class="line"><span class="string">&#x27;plasma&#x27;：从紫色到橙色渐变，用于连续数据，较viridis颜色更丰富。</span></span><br><span class="line"><span class="string">&#x27;inferno&#x27;：从黑色到黄色渐变，用于连续数据，较viridis颜色更加明亮。</span></span><br><span class="line"><span class="string">&#x27;magma&#x27;：从黑色到白色渐变，用于连续数据，较viridis颜色更适合打印。</span></span><br><span class="line"><span class="string">&#x27;cividis&#x27;：从蓝色到黄色渐变，用于连续数据，颜色较温和。</span></span><br><span class="line"><span class="string">&#x27;cool&#x27;：从青色到蓝色渐变，用于连续数据，适用于冷色调的数据。</span></span><br><span class="line"><span class="string">&#x27;hot&#x27;：从黑色到红色渐变，用于连续数据，适用于暖色调的数据。</span></span><br><span class="line"><span class="string">&#x27;coolwarm&#x27;：从蓝色到红色渐变，用于连续数据，冷暖色调交替。</span></span><br><span class="line"><span class="string">&#x27;rainbow&#x27;：七色彩虹渐变，用于连续数据，颜色多样。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment"># 添加颜色条</span></span><br><span class="line">cbar = plt.colorbar(heatmap, fraction=<span class="number">0.046</span>, pad=<span class="number">0.04</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加图例</span></span><br><span class="line">ax.set_title(<span class="string">&#x27;热力图&#x27;</span>, fontsize=<span class="number">16</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加横纵坐标label</span></span><br><span class="line">ax.set_xlabel(<span class="string">&#x27;X轴&#x27;</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line">ax.set_ylabel(<span class="string">&#x27;Y轴&#x27;</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置颜色条标签字体大小</span></span><br><span class="line">cbar.ax.tick_params(labelsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置横纵坐标标签字体大小</span></span><br><span class="line">ax.tick_params(axis=<span class="string">&#x27;both&#x27;</span>, which=<span class="string">&#x27;major&#x27;</span>, labelsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置背景颜色</span></span><br><span class="line">ax.set_facecolor(<span class="string">&#x27;#f0f0f0&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图表边框颜色</span></span><br><span class="line">ax.spines[<span class="string">&#x27;top&#x27;</span>].set_color(<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line">ax.spines[<span class="string">&#x27;right&#x27;</span>].set_color(<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="箱线图"><a href="#箱线图" class="headerlink" title="箱线图"></a>箱线图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">绘制箱线图代码</span></span><br><span class="line"><span class="string">1.易读易懂：箱线图是一种直观且易懂的图表类型，无需复杂的数学知识即可解读数据的分布情况。</span></span><br><span class="line"><span class="string">2.高效展示信息：箱线图能够在一个图中展示出数据的多个统计特征，包括中位数、四分位数、最大值、最小值和离群值，简洁高效。</span></span><br><span class="line"><span class="string">3.检测异常值：箱线图可以帮助我们发现数据中的异常值，从而进行数据清洗或者更深入的分析。</span></span><br><span class="line"><span class="string">4.有效比较：箱线图可以同时展示多组数据的分布情况，有助于进行数据间的比较和对比。</span></span><br><span class="line"><span class="string">5.无偏性：箱线图对数据的排序和数量不敏感，其表现是无偏的，适用于多种类型的数据。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 为了支持中文字体</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 上述字库没负号，因此负号不进行字体变换</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成示例数据</span></span><br><span class="line">np.random.seed(<span class="number">0</span>)</span><br><span class="line">data1 = np.random.normal(<span class="number">0</span>, <span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">data2 = np.random.normal(<span class="number">2</span>, <span class="number">1.5</span>, <span class="number">100</span>)</span><br><span class="line">data3 = np.random.normal(-<span class="number">2</span>, <span class="number">1.5</span>, <span class="number">100</span>)</span><br><span class="line">data4 = np.random.normal(<span class="number">3</span>, <span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">data5 = np.random.normal(-<span class="number">1</span>, <span class="number">0.5</span>, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个Figure对象和一个子图</span></span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制箱线图</span></span><br><span class="line">boxes = ax.boxplot([data1, data2, data3, data4, data5], labels=[<span class="string">&#x27;Group 1&#x27;</span>, <span class="string">&#x27;Group 2&#x27;</span>, <span class="string">&#x27;Group 3&#x27;</span>, <span class="string">&#x27;Group 4&#x27;</span>, <span class="string">&#x27;Group 5&#x27;</span>],</span><br><span class="line">                   sym=<span class="string">&#x27;o&#x27;</span>, vert=<span class="literal">True</span>, patch_artist=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置每组数据的颜色</span></span><br><span class="line">colors = [<span class="string">&#x27;tab:blue&#x27;</span>, <span class="string">&#x27;yellow&#x27;</span>, <span class="string">&#x27;tab:green&#x27;</span>, <span class="string">&#x27;tab:red&#x27;</span>, <span class="string">&#x27;tab:purple&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> box, color <span class="keyword">in</span> <span class="built_in">zip</span>(boxes[<span class="string">&#x27;boxes&#x27;</span>], colors):</span><br><span class="line">    box.<span class="built_in">set</span>(facecolor=color)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加图例</span></span><br><span class="line">ax.legend(boxes[<span class="string">&#x27;boxes&#x27;</span>], [<span class="string">&#x27;Group 1&#x27;</span>, <span class="string">&#x27;Group 2&#x27;</span>, <span class="string">&#x27;Group 3&#x27;</span>, <span class="string">&#x27;Group 4&#x27;</span>, <span class="string">&#x27;Group 5&#x27;</span>], loc=<span class="string">&#x27;upper right&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加横纵坐标label</span></span><br><span class="line">ax.set_xlabel(<span class="string">&#x27;组别&#x27;</span>, fontsize=<span class="number">12</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line">ax.set_ylabel(<span class="string">&#x27;数值&#x27;</span>, fontsize=<span class="number">12</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图表标题</span></span><br><span class="line">ax.set_title(<span class="string">&#x27;箱线图&#x27;</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置刻度标签字体大小</span></span><br><span class="line">ax.tick_params(axis=<span class="string">&#x27;both&#x27;</span>, which=<span class="string">&#x27;major&#x27;</span>, labelsize=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加网格线</span></span><br><span class="line">ax.grid(<span class="literal">True</span>, linestyle=<span class="string">&#x27;--&#x27;</span>, alpha=<span class="number">0.7</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置背景颜色</span></span><br><span class="line">ax.set_facecolor(<span class="string">&#x27;#f0f0f0&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图表边框颜色</span></span><br><span class="line">ax.spines[<span class="string">&#x27;top&#x27;</span>].set_color(<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line">ax.spines[<span class="string">&#x27;right&#x27;</span>].set_color(<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="等高线图"><a href="#等高线图" class="headerlink" title="等高线图"></a>等高线图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">绘制等高线图的代码</span></span><br><span class="line"><span class="string">适用于地形、函数、场、势的绘制。</span></span><br><span class="line"><span class="string">1.表现数据等值线：等高线图通过等值线来展示数据的分布情况，帮助人们快速了解数据的变化趋势和模式。</span></span><br><span class="line"><span class="string">2.保留二维信息：等高线图是二维图形，能够清晰表达两个自变量之间的关系，适用于分析二维数据。</span></span><br><span class="line"><span class="string">3.显示数据变化：等高线图通过等值线的间距和形态变化，能够有效显示数据的变化趋势和梯度。</span></span><br><span class="line"><span class="string">4.强调变化梯度：等高线图通过等值线的密集程度和形态变化，突出数据变化的梯度，有助于识别变化的快慢和方向。</span></span><br><span class="line"><span class="string">5.检测异常值：等高线图可以帮助我们发现数据中的异常值，因为异常值通常在等值线中表现为不规则的形状。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 为了支持中文字体</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 上述字库没负号，因此负号不进行字体变换</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成示例数据（二维数组）</span></span><br><span class="line">x = np.linspace(-<span class="number">10</span>, <span class="number">10</span>, <span class="number">100</span>)</span><br><span class="line">y = np.linspace(-<span class="number">10</span>, <span class="number">10</span>, <span class="number">100</span>)</span><br><span class="line">X, Y = np.meshgrid(x, y)</span><br><span class="line">Z = X ** <span class="number">2</span> - Y ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个Figure对象和一个子图</span></span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制等高线图，并设置样式</span></span><br><span class="line">contour = ax.contour(X, Y, Z, levels=<span class="number">50</span>, cmap=<span class="string">&#x27;coolwarm&#x27;</span>, linewidths=<span class="number">1.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加颜色条</span></span><br><span class="line">cbar = plt.colorbar(contour, ax=ax)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加图例</span></span><br><span class="line">ax.set_title(<span class="string">&#x27;等高线图&#x27;</span>, fontsize=<span class="number">16</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加横纵坐标label</span></span><br><span class="line">ax.set_xlabel(<span class="string">&#x27;X轴&#x27;</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line">ax.set_ylabel(<span class="string">&#x27;Y轴&#x27;</span>, fontsize=<span class="number">14</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置颜色条标签字体大小</span></span><br><span class="line">cbar.ax.tick_params(labelsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置线条样式为虚线</span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> contour.collections:</span><br><span class="line">    line.set_linestyle(<span class="string">&#x27;dashed&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置刻度标签字体大小</span></span><br><span class="line">ax.tick_params(axis=<span class="string">&#x27;both&#x27;</span>, which=<span class="string">&#x27;major&#x27;</span>, labelsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置背景颜色</span></span><br><span class="line">ax.set_facecolor(<span class="string">&#x27;#f0f0f0&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图表边框颜色</span></span><br><span class="line">ax.spines[<span class="string">&#x27;top&#x27;</span>].set_color(<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line">ax.spines[<span class="string">&#x27;right&#x27;</span>].set_color(<span class="string">&#x27;none&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="雷达图"><a href="#雷达图" class="headerlink" title="雷达图"></a>雷达图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">绘制雷达图的代码。</span></span><br><span class="line"><span class="string">可以用来对“属性”进行刻画</span></span><br><span class="line"><span class="string">1.多变量比较：雷达图在展示多个变量之间的关系和差异方面具有优势，可以直观地展示数据在不同维度上的表现。</span></span><br><span class="line"><span class="string">2.易于解读：雷达图是一种直观的图表类型，无需深入的数学知识即可理解数据的多维特征，使得数据分析和传达更容易。</span></span><br><span class="line"><span class="string">3.数据关联性：雷达图将多个变量的信息集中在一个图形中展示，有助于观察不同维度之间的关联性，帮助我们发现隐藏在数据背后的规律。</span></span><br><span class="line"><span class="string">4.强调相对比较：雷达图更注重相对的大小和差异，而非绝对数值，适用于比较多组数据在各个维度上的表现。</span></span><br><span class="line"><span class="string">5.高效传递信息：雷达图以图形化的方式呈现多维数据，使得大量信息能够被快速有效地传达给观众。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 为了支持中文字体</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 上述字库没负号，因此负号不进行字体变换</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例数据：每个维度的数据值（三组数据）</span></span><br><span class="line">categories = [<span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;C&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="string">&#x27;E&#x27;</span>]  <span class="comment"># 维度名称</span></span><br><span class="line">values1 = [<span class="number">4</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>]  <span class="comment"># 第一组数据值</span></span><br><span class="line">values2 = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">3</span>]  <span class="comment"># 第二组数据值</span></span><br><span class="line">values3 = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">5</span>]  <span class="comment"># 第三组数据值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将第一个维度值复制到最后，以形成闭合</span></span><br><span class="line">values1 += values1[:<span class="number">1</span>]</span><br><span class="line">values2 += values2[:<span class="number">1</span>]</span><br><span class="line">values3 += values3[:<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算每个维度对应的角度</span></span><br><span class="line">angles = np.linspace(<span class="number">0</span>, <span class="number">2</span>*np.pi, <span class="built_in">len</span>(categories), endpoint=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将角度与数据值对应起来</span></span><br><span class="line">angles = np.concatenate((angles, [angles[<span class="number">0</span>]]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个Figure对象和一个子图，使用极坐标</span></span><br><span class="line">fig, ax = plt.subplots(subplot_kw=&#123;<span class="string">&#x27;projection&#x27;</span>: <span class="string">&#x27;polar&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制三组雷达图，并设置样式</span></span><br><span class="line">ax.plot(angles, values1, linewidth=<span class="number">1.5</span>, linestyle=<span class="string">&#x27;--&#x27;</span>, color=<span class="string">&#x27;b&#x27;</span>, label=<span class="string">&#x27;数据1&#x27;</span>)</span><br><span class="line">ax.fill(angles, values1, alpha=<span class="number">0.3</span>, color=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax.plot(angles, values2, linewidth=<span class="number">1.5</span>, linestyle=<span class="string">&#x27;-.&#x27;</span>, color=<span class="string">&#x27;g&#x27;</span>, label=<span class="string">&#x27;数据2&#x27;</span>)</span><br><span class="line">ax.fill(angles, values2, alpha=<span class="number">0.3</span>, color=<span class="string">&#x27;g&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ax.plot(angles, values3, linewidth=<span class="number">1.5</span>, linestyle=<span class="string">&#x27;solid&#x27;</span>, color=<span class="string">&#x27;r&#x27;</span>, label=<span class="string">&#x27;数据3&#x27;</span>)</span><br><span class="line">ax.fill(angles, values3, alpha=<span class="number">0.3</span>, color=<span class="string">&#x27;r&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加图例</span></span><br><span class="line">ax.legend(loc=<span class="string">&#x27;upper right&#x27;</span>, fontsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置雷达图的标题</span></span><br><span class="line">ax.set_title(<span class="string">&#x27;雷达图&#x27;</span>, fontsize=<span class="number">16</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置角度刻度，即设置维度的标签</span></span><br><span class="line">ax.set_xticks(angles[:-<span class="number">1</span>])</span><br><span class="line">ax.set_xticklabels(categories, fontsize=<span class="number">12</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置刻度标签字体大小</span></span><br><span class="line">ax.tick_params(axis=<span class="string">&#x27;both&#x27;</span>, labelsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置背景颜色</span></span><br><span class="line">ax.set_facecolor(<span class="string">&#x27;#f0f0f0&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图表边框颜色</span></span><br><span class="line">ax.spines[<span class="string">&#x27;polar&#x27;</span>].set_color(<span class="string">&#x27;#b0b0b0&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 隐藏雷达图的刻度线</span></span><br><span class="line"><span class="comment"># ax.xaxis.grid(False)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="网络图"><a href="#网络图" class="headerlink" title="网络图"></a>网络图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">绘制网络图的代码。</span></span><br><span class="line"><span class="string">能够对图结构进行直观刻画，可用于路径规划等问题。</span></span><br><span class="line"><span class="string">同样树结构也能够用这个代码来画，因为树是特殊的有向无环图</span></span><br><span class="line"><span class="string">这个网站也可以：https://csacademy.com/app/graph_editor/</span></span><br><span class="line"><span class="string">1.多对多关系：网络图能够展示多个节点之间的多对多关系，适用于描述复杂的关联和连接。</span></span><br><span class="line"><span class="string">2.可视化复杂结构：网络图可以清晰地展示节点之间的连接和关系，便于理解和观察复杂结构。</span></span><br><span class="line"><span class="string">3.节点和边属性：网络图的节点和边可以附带属性信息，使得数据可以更加丰富，节点和边的样式和颜色可以代表不同的属性。</span></span><br><span class="line"><span class="string">4.异构性：网络图可以描述异构性的数据，即不同类型的节点和边可以同时存在，能够展示多种类型的关系。</span></span><br><span class="line"><span class="string">5.图算法应用：网络图的特点使得其在图算法（例如路径查找、社区发现等）方面具有广泛的应用。</span></span><br><span class="line"><span class="string">6.强调连接：网络图强调节点之间的连接关系，使得观察和分析节点的交互和连接变得更加直观。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> networkx <span class="keyword">as</span> nx</span><br><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 为了支持中文字体</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 上述字库没负号，因此负号不进行字体变换</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个简单的网络图</span></span><br><span class="line">G = nx.Graph()</span><br><span class="line">G.add_nodes_from([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</span><br><span class="line">G.add_edges_from([(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">4</span>, <span class="number">5</span>), (<span class="number">5</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">4</span>, <span class="number">6</span>)])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制网络图</span></span><br><span class="line">pos = nx.circular_layout(G)  <span class="comment"># 设置节点的位置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整节点和边的样式</span></span><br><span class="line">nx.draw_networkx_nodes(G, pos, node_color=<span class="string">&#x27;skyblue&#x27;</span>, node_size=<span class="number">1000</span>, label=<span class="string">&#x27;节点&#x27;</span>)</span><br><span class="line">nx.draw_networkx_edges(G, pos, edge_color=<span class="string">&#x27;gray&#x27;</span>, width=<span class="number">2</span>)</span><br><span class="line">nx.draw_networkx_labels(G, pos, font_size=<span class="number">12</span>, font_weight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加图例</span></span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加图的标题</span></span><br><span class="line">plt.title(<span class="string">&#x27;网络图&#x27;</span>, fontsize=<span class="number">16</span>, fontweight=<span class="string">&#x27;bold&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置背景颜色</span></span><br><span class="line">plt.gca().set_facecolor(<span class="string">&#x27;#f0f0f0&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 隐藏坐标轴</span></span><br><span class="line">plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整图例的位置</span></span><br><span class="line">plt.legend(loc=<span class="string">&#x27;upper right&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示图形</span></span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/07/29/%E7%BB%98%E5%9B%BE2-%E7%83%AD%E5%8A%9B%E5%9B%BE-%E7%AE%B1%E7%BA%BF%E5%9B%BE-%E7%AD%89%E9%AB%98%E7%BA%BF%E5%9B%BE-%E9%9B%B7%E8%BE%BE%E5%9B%BE-%E7%BD%91%E7%BB%9C%E5%9B%BE/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag">数学建模</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%BB%E5%9B%BE/" rel="tag">画图</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/07/29/%E7%BB%98%E5%9B%BE3-%E9%A5%BC%E5%9B%BE-%E6%A1%91%E5%9F%BA%E5%9B%BE-%E4%B8%89%E7%BB%B4%E5%9B%BE%E5%83%8F/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            绘图3(饼图,桑基图,三维图像)
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/07/29/%E7%BB%98%E5%9B%BE1-%E6%8A%98%E7%BA%BF%E5%9B%BE-%E6%9F%B1%E7%8A%B6%E5%9B%BE-%E7%9B%B4%E6%96%B9%E5%9B%BE-%E6%95%A3%E7%82%B9%E5%9B%BE-%E6%B0%94%E6%B3%A1%E5%9B%BE/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">绘图1(折线图,柱状图,直方图,散点图,气泡图)</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.staticfile.org/valine/1.4.16/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "YQEs4iho5JeuvvyqTsOIcGUu-gzGzoHsz",
+    app_key: "NJrr8Gl5ULTBNesNuCYYbDYm",
+    path: window.location.pathname,
+    avatar: "retro",
+    placeholder: "期待您的评论！",
+    recordIP: false,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023
+        <i class="ri-heart-fill heart_icon"></i> Lucas
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hy&#39;s Treasure house"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/self_about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/blog_log">blog日志</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.org/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+ 
+<script src="/js/clickBoom2.js"></script>
+ 
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":350},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</html>
