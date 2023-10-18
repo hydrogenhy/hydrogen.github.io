@@ -126,8 +126,7 @@
 </ul>
 </blockquote>
 <p>首先从整体对BP神经网络有一定的认识：</p>
-<img src="/pic/image-20231018004015157.png" style="zoom:67%;" />
-
+<p><img src="/../pic/image-20231018004015157.png"></p>
 <p>BP神经网络能够实现<strong>多输入——多输出</strong>的任务。</p>
 <p>对于每一个节点来说，其是由若干前继节点<strong>加权求和$+$激活</strong>得到的。具体让我们来对<strong>一个神经元</strong>进行观察：</p>
 <p><img src="/../pic/image-20231018005640938.png"></p>
@@ -141,8 +140,7 @@
 <h2 id="参数的更新"><a href="#参数的更新" class="headerlink" title="参数的更新"></a>参数的更新</h2><p>更新方法我们采用最朴素也最通用的——<strong>梯度下降法</strong>。</p>
 <p>梯度下降法简单来说就是：对某一变量，其更新方向应该是沿着误差<strong>梯度方向的反方向</strong>——也就是<strong>梯度下降</strong>方向去更新。这样能够减小我们的误差值。而梯度方向我们可以用<strong>偏导</strong>求出。</p>
 <p>让我们来看一个很简单的例子：</p>
-<img src="../pic/image-20231018012735470.png" style="zoom:67%;" />
-
+<p><img src="/../pic/image-20231018012735470.png"></p>
 <p>列出各个节点的关系式：<br>$$<br>\begin{array}{ll}<br>O_1&#x3D;x_1&amp;O_2&#x3D;x_2<br>\\ I_3&#x3D;W_{13}O_1+W_{23}O_2&amp;O_3&#x3D;f(I_3)<br>\\ I_4&#x3D;W_{34}O_3&amp;O_4&#x3D;f(I_4)<br>\\ I_5&#x3D;W_{35}O_3&amp;O_5&#x3D;f(I_5)<br>\\ y_1&#x3D;O_4&amp;y_2&#x3D;O_5<br>\end{array}<br>$$<br>定义误差函数 $e$ ：<br>$$<br>e &#x3D; \frac12 [(\hat{y_1} - y_1)^2 + (\hat{y_2} - y_2)^2]<br>$$</p>
 <p>求偏导：<br>$$<br>\begin{gathered}<br>\frac{\partial e}{\partial W_{13}}&#x3D;\frac{\partial e}{\partial I_3}\cdot\frac{\partial I_3}{\partial W_{13}}&#x3D;\frac{\partial e}{\partial I_3}O_1&#x3D;\delta_3 x_1<br>\\ \frac{\partial e}{\partial W_{23}}&#x3D;\frac{\partial e}{\partial I_3}\cdot\frac{\partial I_3}{\partial W_{23}}&#x3D;\frac{\partial e}{\partial I_3}O_2&#x3D;\delta_3 x_2<br>\\ \frac{\partial e}{\partial W_{34}}&#x3D;\frac{\partial e}{\partial I_4}\cdot\frac{\partial I_4}{\partial W_{34}}&#x3D;\frac{\partial e}{\partial I_4}O_3 &#x3D;\delta_4 O_3<br>\\ \frac{\partial e}{\partial W_{35}}&#x3D;\frac{\partial e}{\partial I_5}\cdot\frac{\partial I_5}{\partial W_{55}}&#x3D;\frac{\partial e}{\partial I_5}O_3 &#x3D;\delta_5 O_3<br>\end{gathered}<br>$$<br>所以我们接下来的任务就是求 $\delta_3, \delta_4,\delta_5$<br>$$<br>\begin{gathered}<br>\delta_4&#x3D;\frac{\partial e}{\partial I_4}&#x3D;(\hat{y_1}-y_1)f’(I_4)<br>\\ \delta_5&#x3D;\frac{\partial e}{\partial I_5}&#x3D;(\hat{y_2}-y_2)f’(I_5)<br>\\ \delta_3&#x3D;\frac{\partial e}{\partial I_3}&#x3D;(\delta_4W_{34}+\delta_5 W_{35})f’(I_3)<br>\end{gathered}<br>$$<br><strong>注意激活函数也要求导！</strong></p>
 <p>观察结果，能够发现 $\delta_3$ 的值依赖于 $\delta_4,\delta_5$——当且节点计算要依赖于后一层节点的计算——这也就是反向传播的很好表现。 </p>
