@@ -126,12 +126,11 @@
 </ul>
 </blockquote>
 <p>首先从整体对BP神经网络有一定的认识：</p>
-<img src="../pic/image-20231018004015157.png" style="zoom:67%;" />
+<img src="/pic/image-20231018004015157.png" style="zoom:67%;" />
 
 <p>BP神经网络能够实现<strong>多输入——多输出</strong>的任务。</p>
 <p>对于每一个节点来说，其是由若干前继节点<strong>加权求和$+$激活</strong>得到的。具体让我们来对<strong>一个神经元</strong>进行观察：</p>
-<img src="../pic/image-20231018005640938.png" style="zoom:67%;" />
-
+<p><img src="/../pic/image-20231018005640938.png"></p>
 <p>从这幅图中我们能够看出当且节点得到的输入为<br>$$<br>o &#x3D; f(\sum_j x_jw_j)<br>$$<br>当然，你也可以加入偏置项（bias），使得网络有更好的拟合效果：<br>$$<br>o &#x3D; f(\sum_j x_jw_j + b_j)<br>$$<br>公式中 $f$ 为激活函数，是一个<strong>非线性映射</strong>。常用的函数有 $Relu$ 及其变种，$Sigmoid$ 函数等等。在这里我们以 $Sigmoid$ 为例。<br>$$<br>Sigmoid:\quad \sigma(t) &#x3D; \frac{1}{1+e^{-t}}<br>$$<br><strong>考虑为什么一定要进行非线性映射？</strong></p>
 <blockquote>
 <p>倘若不进行非线性映射，则无论网络有多深，输出结果永远是输入的线性组合，但我们欲解决的问题是线性的情况少之又少。因此非线性映射（激活）能够让我们的网络有着更强的拟合能力。</p>
