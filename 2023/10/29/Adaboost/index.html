@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>BP神经网络 |  Hy&#39;s Treasure house</title>
+      <title>Adaboost |  Hy&#39;s Treasure house</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -61,7 +61,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-BP神经网络"
+  id="post-Adaboost"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -72,7 +72,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  BP神经网络
+  Adaboost
 </h1>
  
 
@@ -80,8 +80,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2023/10/17/BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="article-date">
-  <time datetime="2023-10-17T08:40:34.000Z" itemprop="datePublished">2023-10-17</time>
+      <a href="/2023/10/29/Adaboost/" class="article-date">
+  <time datetime="2023-10-28T16:55:59.000Z" itemprop="datePublished">2023-10-29</time>
 </a> 
   <div class="article-category">
     <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.5k</span>
+            <span class="post-count">2k</span>
         </span>
     </span>
 
@@ -101,7 +101,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">6 分钟</span>
+            <span class="post-count">9 分钟</span>
         </span>
     </span>
 </div>
@@ -116,66 +116,60 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>这篇博客中，我将会与大家分享最基本的<strong>BP神经网络</strong>的工作原理——主要包括<strong>网络的结构、参数的更新方法（反向传播）、网络优缺点</strong>等。BP神经网络是最基本的一种神经网络，难度小但我们能够见微知著得了解大型网络的训练过程。<span id="more"></span></p>
-<h2 id="模型的架构"><a href="#模型的架构" class="headerlink" title="模型的架构"></a>模型的架构</h2><p><strong>反向传播模型</strong>也称B-P模型，<strong>是一种用于前向多层的反向传播学习算法。</strong></p>
-<p>具体而言：</p>
+  <p>我默认大家已经掌握了 $Adaboost$ 的基本操作方法。这篇博客中我将会首先简要介绍一下 $Adaboost$ 的具体流程，接下来将会用大段的推导解决这两个问题：</p>
 <blockquote>
 <ul>
-<li>它可以对组成前向多层网络的各人工神经元之间的连接<strong>权值进行不断的修改</strong>，从而使该前向多层网络能够将输入它的信息变换成所期望的输出信息，因此是<strong>可学习的</strong>。</li>
-<li>在修改各人工神经元的连接权值时，所依据的是该网络的<strong>实际输出与其期望的输出之差</strong>，将这一差值<strong>反向一层一层的向回传播</strong>，因此称作<strong>反向传播</strong>。</li>
+<li>$Adaboost$ 的误差上界是多少，收敛速率如何。</li>
+<li>$Adaboost$ 中最重要的两个参数：第 $m$ 轮得到分类器 $G_m(x)$ 与其对应的权重 $\alpha_m$ 是如何求得的。</li>
 </ul>
 </blockquote>
-<p>首先从整体对BP神经网络有一定的认识：</p>
-<p><img src="/../pic/image-20231018004015157.png"></p>
-<p>BP神经网络能够实现<strong>多输入——多输出</strong>的任务。</p>
-<p>对于每一个节点来说，其是由若干前继节点<strong>加权求和$+$激活</strong>得到的。具体让我们来对<strong>一个神经元</strong>进行观察：</p>
-<p><img src="/../pic/image-20231018005640938.png"></p>
-<p>从这幅图中我们能够看出当且节点得到的输入为<br>$$<br>o &#x3D; f(\sum_j x_jw_j)<br>$$<br>当然，你也可以加入偏置项（bias），使得网络有更好的拟合效果：<br>$$<br>o &#x3D; f(\sum_j x_jw_j + b_j)<br>$$<br>公式中 $f$ 为激活函数，是一个<strong>非线性映射</strong>。常用的函数有 $Relu$ 及其变种，$Sigmoid$ 函数等等。在这里我们以 $Sigmoid$ 为例。<br>$$<br>Sigmoid:\quad \sigma(t) &#x3D; \frac{1}{1+e^{-t}}<br>$$<br><strong>考虑为什么一定要进行非线性映射？</strong></p>
-<blockquote>
-<p>倘若不进行非线性映射，则无论网络有多深，输出结果永远是输入的线性组合，但我们欲解决的问题是线性的情况少之又少。因此非线性映射（激活）能够让我们的网络有着更强的拟合能力。</p>
-</blockquote>
-<p>在经过若干层映射后，我们得到预测的输出 $\hat{y_1}, \hat{y_2}, \dots ,\hat{y_n}$，定义与真实值 $y_1,y_2,\dots,y_n$ 之间的误差函数：<br>$$<br>e&#x3D;E(\overrightarrow{w})&#x3D;\frac12 \sum_i(\hat{y_i}-y_i)^2<br>$$<br>而我们的目的就是调整 $\overrightarrow{w}&#x3D;(w1,w2,\dots,w_m)^T$ 的值<strong>使得误差 $e$ 尽可能小</strong>。</p>
-<p>原理部分到此就结束了。实质上就是每一层数据经过加权并激活后传入到下一层。而具体如何更新参数，接下来我们将会讲到。</p>
-<hr>
-<h2 id="参数的更新"><a href="#参数的更新" class="headerlink" title="参数的更新"></a>参数的更新</h2><p>更新方法我们采用最朴素也最通用的——<strong>梯度下降法</strong>。</p>
-<p>梯度下降法简单来说就是：对某一变量，其更新方向应该是沿着误差<strong>梯度方向的反方向</strong>——也就是<strong>梯度下降</strong>方向去更新。这样能够减小我们的误差值。而梯度方向我们可以用<strong>偏导</strong>求出。</p>
-<p>让我们来看一个很简单的例子：</p>
-<p><img src="/../pic/image-20231018012735470.png"></p>
-<p>列出各个节点的关系式：<br>$$<br>\begin{array}{ll}<br>O_1&#x3D;x_1&amp;O_2&#x3D;x_2<br>\\ I_3&#x3D;W_{13}O_1+W_{23}O_2&amp;O_3&#x3D;f(I_3)<br>\\ I_4&#x3D;W_{34}O_3&amp;O_4&#x3D;f(I_4)<br>\\ I_5&#x3D;W_{35}O_3&amp;O_5&#x3D;f(I_5)<br>\\ y_1&#x3D;O_4&amp;y_2&#x3D;O_5<br>\end{array}<br>$$<br>定义误差函数 $e$ ：<br>$$<br>e &#x3D; \frac12 [(\hat{y_1} - y_1)^2 + (\hat{y_2} - y_2)^2]<br>$$</p>
-<p>求偏导：<br>$$<br>\begin{gathered}<br>\frac{\partial e}{\partial W_{13}}&#x3D;\frac{\partial e}{\partial I_3}\cdot\frac{\partial I_3}{\partial W_{13}}&#x3D;\frac{\partial e}{\partial I_3}O_1&#x3D;\delta_3 x_1<br>\\ \frac{\partial e}{\partial W_{23}}&#x3D;\frac{\partial e}{\partial I_3}\cdot\frac{\partial I_3}{\partial W_{23}}&#x3D;\frac{\partial e}{\partial I_3}O_2&#x3D;\delta_3 x_2<br>\\ \frac{\partial e}{\partial W_{34}}&#x3D;\frac{\partial e}{\partial I_4}\cdot\frac{\partial I_4}{\partial W_{34}}&#x3D;\frac{\partial e}{\partial I_4}O_3 &#x3D;\delta_4 O_3<br>\\ \frac{\partial e}{\partial W_{35}}&#x3D;\frac{\partial e}{\partial I_5}\cdot\frac{\partial I_5}{\partial W_{55}}&#x3D;\frac{\partial e}{\partial I_5}O_3 &#x3D;\delta_5 O_3<br>\end{gathered}<br>$$<br>所以我们接下来的任务就是求 $\delta_3, \delta_4,\delta_5$<br>$$<br>\begin{gathered}<br>\delta_4&#x3D;\frac{\partial e}{\partial I_4}&#x3D;(\hat{y_1}-y_1)f’(I_4)<br>\\ \delta_5&#x3D;\frac{\partial e}{\partial I_5}&#x3D;(\hat{y_2}-y_2)f’(I_5)<br>\\ \delta_3&#x3D;\frac{\partial e}{\partial I_3}&#x3D;(\delta_4W_{34}+\delta_5 W_{35})f’(I_3)<br>\end{gathered}<br>$$<br><strong>注意激活函数也要求导！</strong></p>
-<p>观察结果，能够发现 $\delta_3$ 的值依赖于 $\delta_4,\delta_5$——当且节点计算要依赖于后一层节点的计算——这也就是反向传播的很好表现。 </p>
-<p>接下来通过设置学习率 $\alpha$，对参数进行更新即可：<br>$$<br>W_{k}^{(t+1)} &#x3D; W_{k}^{(t)} - \alpha \frac{\partial e}{\partial I_k}<br>$$<br>即沿着梯度下降的方向走一段距离，使得误差减小。我们完成了对参数的一次更新。接下来不断给出新的一组输入与输出，再更新参数，直至 $e &lt; \epsilon$ 停止。</p>
-<hr>
-<h2 id="前馈网络的表征能力"><a href="#前馈网络的表征能力" class="headerlink" title="前馈网络的表征能力"></a>前馈网络的表征能力</h2><ul>
-<li><p><strong>布尔函数</strong>：任何布尔函数可以用两层网络准确表示。<strong>隐层单元数随输入数增加呈指数增长。</strong></p>
-</li>
-<li><p><strong>连续函数</strong>：每个有界连续函数可以用两层网络以任意小的误差逼近。<strong>隐层使用Sigmoid函数</strong>。</p>
-</li>
-<li><p><strong>任意函数</strong>：任意函数可以用三层网络以任意精度逼近。输出层线性单元，<strong>隐层Sigmoid单元</strong>。</p>
-</li>
-</ul>
-<hr>
-<h2 id="BP网络的优缺点"><a href="#BP网络的优缺点" class="headerlink" title="BP网络的优缺点"></a>BP网络的优缺点</h2><p><strong>优点：</strong></p>
+<span id="more"></span>
+
+<h2 id="Adaboost-算法流程"><a href="#Adaboost-算法流程" class="headerlink" title="$Adaboost$ 算法流程"></a>$Adaboost$ 算法流程</h2><p><img src="/../pic/adaboost.png"></p>
+<p>定义变量：</p>
 <blockquote>
 <ul>
-<li><p><strong>理论基础牢固，推导过程严谨，物理概念清晰，通用性好</strong>等。</p>
-</li>
-<li><p>所以，它是目前用来训练前向多层网络较好的算法。</p>
-</li>
+<li>$G_m(x)$ 为第 $m$ 次迭代得到的弱分类器，是一种映射：$x_i \to \{-1,+1\}$</li>
+<li>$f_m(x) &#x3D; \sum_m^{M} G_m(x)$ 是当前得到的强分类器。即弱分类器的线性组合，<strong>值域是连续的</strong>而非只有 $\pm1$.</li>
+<li>$w_{m,i}$ 为第 $m$ 次迭代时第 $i$ 个样本的权重.</li>
+<li>$\alpha_m$ 为对应 $G_m(x)$ 的权重.</li>
+<li>$I(x)$ 为判断函数，当 $x$ 为真则返回 $1$，否则返回 $0$.</li>
+<li>$e_m$ 为 $G_m(x)$ 的得到的误差.</li>
+<li>$Z_m &#x3D; \sum_i w_{m,i}\exp(-\alpha_my_iG_m(x_i))$ 是规范化子，为了让权重归一化。</li>
 </ul>
 </blockquote>
-<p><strong>缺点：</strong> </p>
-<blockquote>
-<ul>
-<li><p>该学习算法的<strong>收敛速度慢</strong></p>
-</li>
-<li><p>网络中<strong>隐节点个数</strong>的选取尚<strong>无理论上的指导</strong></p>
-</li>
-<li><p>从数学角度看，B-P算法是一种梯度最速下降法，这就可能<strong>出现局部极小</strong>的问题。当出现局部极小时，从表面上看，误差符合要求，但这时所得到的解并不一定是问题的真正解。</p>
-</li>
+<p> 此算法的<strong>循环过程</strong>是这样的：</p>
+<ol>
+<li>在当前数据集下训练一个简单的分类模型 $G_m(x)$ 使得<strong>误差最小</strong> $\min(\sum_i w_{m,i} I(y_i \neq G_m(x_i)))$</li>
+<li>计算当前分类<strong>误差</strong> $e_m&#x3D;\sum_i w_{m,i} I(y_i \neq G_m(x_i))$</li>
+<li>计算当前<strong>分类器的权重</strong> $\alpha_m &#x3D; \frac{1}{2}ln(\frac{1-e_m}{e_m})$</li>
+<li>更新<strong>样本权重</strong> $w_{m+1,i}&#x3D;\frac{w_{m,i}\exp(-\alpha_my_iG_m(x_i))}{Z_m}$</li>
+<li>将弱分类器加入到强分类器中 $f_m(x) &#x3D; f_{m-1}(x) + \alpha_mG_m(x)$</li>
+<li>若迭代未结束，则返回第一步，在新的权值下去<strong>寻找新的弱分类器</strong>。</li>
+</ol>
+<hr>
+<h2 id="Adaboost-的误差上界与收敛速率"><a href="#Adaboost-的误差上界与收敛速率" class="headerlink" title="$Adaboost$ 的误差上界与收敛速率"></a>$Adaboost$ 的误差上界与收敛速率</h2><p>在这个部分中我将首先推导出 $Adaboost$ 的<strong>误差上界</strong>，并通过误差上界进行<strong>放缩</strong>，得出其收敛速率随着新弱分类器的加入是<strong>指数下降</strong>的结论。</p>
+<h3 id="Adaboost-误差上界"><a href="#Adaboost-误差上界" class="headerlink" title="$Adaboost$ 误差上界"></a>$Adaboost$ 误差上界</h3><p>先给出结论，然后我们对其进行证明。对于最终的误差 $Loss&#x3D;\frac{1}{N}\sum_{i&#x3D;1}^{N}I(G(x_i)\neq y_i)$ 有：<br>$$<br>\begin{aligned}\frac{1}{N}\sum_{i&#x3D;1}^{N}I(G(x_i)\neq y_i)\leq\frac{1}{N}\sum_{i}exp(-y_if(x_i))&#x3D;\prod_{m}Z_m\end{aligned}<br>$$</p>
+<h4 id="首先证明第一个不等号是成立的"><a href="#首先证明第一个不等号是成立的" class="headerlink" title="首先证明第一个不等号是成立的"></a>首先证明第一个不等号是成立的</h4><ul>
+<li>当 $G(x_i)&#x3D; y_i$ 时，$I(G(x_i)\neq y_i)&#x3D; 0$ 而 $exp(-y_if(x_i))&gt;0$</li>
+<li>当 $G(x_i)\neq y_i$ 时，$I(G(x_i)\neq y_i)&#x3D; 1$，但因为 $-y_if(x_i) \ge 0$，所以 $exp(-y_if(x_i))\ge 1$</li>
 </ul>
-</blockquote>
-<p>再知道原理后，大家已经基本具备了从底层构建BP神经网络的所有知识。如果你进一步学习了<strong>梯度下降算法</strong>，那么你完全有能力手搓一个神经网络。Why not have a try?</p>
+<p>综上，$I(G(x_i)\neq y_i)\le exp(-y_if(x_i))$ 总是成立的，因此第一个不等号得证。</p>
+<h4 id="接下来证明第二个等号是成立的"><a href="#接下来证明第二个等号是成立的" class="headerlink" title="接下来证明第二个等号是成立的"></a>接下来证明第二个等号是成立的</h4><p>考虑在更新权重的时候，为了使得权重归一化，因此权重 $w_{m+1, i}$ 与规范化子 $Z_m$ 有如下关系：<br>$$<br>w_{m+1,i}&#x3D;\frac{w_{m,i}exp(-\alpha_my_{i}G_m(x_i))}{Z_{m}}<br>$$<br>因此：<br>$$<br>w_{m,i}exp(-\alpha_my_{i}G_m(x_i))&#x3D;Z_{m}w_{m+1,i}<br>$$<br>先做一个简单的变换，为我们后续证明做一个铺垫：<br>$$<br>\begin{aligned}<br>&amp;\sum_iw_{m,i}exp(-\alpha_my_iG_m(x_i))<br>\\&#x3D;&amp;\sum_iZ_mw_{m+1,i}<br>\\&#x3D;&amp;Z_m\sum_iw_{m+1,i}<br>\end{aligned}<br>$$<br>所以对于待证明不等式组的中间式子，做如下变形。其中有两点注意：1. 在<strong>初始时刻样本权重均为 $\frac1N$，即 $w_{1,i} &#x3D; \frac1N$<strong>，2. 所有</strong>权重和为1</strong>，即 $\sum_iw_{m,i}&#x3D;1$：<br>$$<br>\begin{aligned}<br>&amp;\frac1N\sum_iexp(-y_if(x_i)) \\<br>&#x3D;&amp;\frac1N\sum_iexp(-\sum_{m&#x3D;1}^M\alpha_my_iG_m(x_i)) \\<br>&#x3D;&amp;\sum_{i}w_{1,i}\cdot exp[-\alpha_{1}y_{i}G_{1}\left(x_{i}\right)-\alpha_{2}y_{i}G_{2}\left(x_{i}\right)-\ldots-\alpha_{M}y_{i}G_{M}\left(x_{i}\right)] \\<br>&#x3D;&amp;\sum_iw_{1,i}\prod_{m&#x3D;1}^Mexp(-\alpha_my_iG_m(x_i)) \\<br>&#x3D;&amp;Z_1\sum_iw_{2,i}\prod_{m&#x3D;2}^Mexp(-\alpha_my_iG_m(x_i)) \\<br>&#x3D;&amp;Z_1Z_2\sum_iw_{3,i}\prod_{m&#x3D;3}^Mexp(-\alpha_my_iG_m(x_i)) \\<br>&#x3D;&amp;\ldots  \\<br>&#x3D;&amp;Z_1Z_2 \cdots Z_{M-1}\sum_iw_{M,i}exp(-\alpha_My_iG_M(x_i)) \\<br>&#x3D;&amp;Z_1Z_2 \cdots Z_{M}\sum_iw_{M+1,i}\\<br>&#x3D;&amp;\prod_m^MZ_m<br>\end{aligned}<br>$$<br>因此我们证明了第二个等号是成立的。</p>
+<h3 id="Adaboost-收敛速率"><a href="#Adaboost-收敛速率" class="headerlink" title="$Adaboost$ 收敛速率"></a>$Adaboost$ 收敛速率</h3><p>那么收敛速率如何呢？在我们解决这个问题之前，我们首先要找到 $Z_m$ 与误差 $e_m$ 之间的关系。</p>
+<p>在求解过程中我们需要用的 $\alpha_m&#x3D;\frac{1}{2}ln(\frac{1-e_m}{e_m})$ 这个结论。至于为什么 $\alpha_m$ 是这个值，我将会在第三部分讲到。<br>$$<br>\begin{aligned}<br>Z_{m}&amp; &#x3D;\sum_{i&#x3D;1}^{N}\left.w_{m,i}\exp(-\alpha_{m}\left.y_{i}\left(x_{i}\right)\right)\right.  \\<br>&amp;&#x3D;\sum_{y_i&#x3D;G_m{(x_i)}}w_{m,i}e^{-\alpha_m}+\sum_{y_i\neq G_m{(x_i)}}w_{m,i}e^{\alpha_m} \\<br>&amp;&#x3D;e^{-\alpha_m}\sum_{y_i&#x3D;G_m\left(x_i\right)}w_{m,i}+e^{\alpha_m}\sum_{y_i\neq  G_m\left(x_i\right)}w_{m,i} \\<br>&amp;&#x3D;\sqrt{\frac{e_m}{1-e_m}}(1-e_m) + \sqrt{\frac{1-e_m}{e_m}}e_m\\<br>&amp;&#x3D;2\sqrt{e_m\left(1-e_m\right)} \\<br>&amp;&#x3D;\sqrt{1-4{\gamma}_m^2}<br>\end{aligned}<br>$$<br>其中我们令 $\gamma_m &#x3D; \frac12 - e_m$。事实上 $\gamma_m$ 一定是正值，我们考虑某分类器得到的误差 $e_m &gt; \frac12$ ，则将这个分类器的分类结果<strong>加个负号得到新分类器</strong>，而此时 $e_m’&#x3D;1-e_m$，即误差小于 $\frac12$ ，因此在得到最优的 $G_m(x)$ 时 $\gamma_m &gt; 0$ 一定成立。</p>
+<p>下面我们来证明指数收敛，我们先证明：<br>$$<br>\sqrt{(1-4\gamma_m^2)}\leq exp(-2\gamma_m^2)<br>$$<br>通过泰勒展开，我们能够较容易的证明这个命题：<br>$$<br>\sqrt{1-4r^2}&#x3D;1-2r^2-2r^4+O(r^4)\\<br>e^{-2r^2}&#x3D;1-2r^2+2r^4+O(r^4)<br>$$<br>通过图像我们能够更直观的看出两者的大小关系：</p>
+<img src="../pic/放缩.png" style="zoom:50%;" />
+
+
+
+<p>因此我们再次对误差进行放缩，能够得到：<br>$$<br>\prod_{m&#x3D;1}^M\sqrt{(1-4\gamma_m^2)}\leq\prod_{m&#x3D;1}^Mexp(-2\gamma_m^2)&#x3D;exp(-2\sum_{m&#x3D;1}^M\gamma_m^2)<br>$$<br>也就是说，随着分类器的增多，指数项上不断减小，这也就表明了 $Adaboost$ 的训练误差是以指数速度下降的。</p>
+<h2 id="Adaboost-中分类器与权重的选取——以加法模型解释"><a href="#Adaboost-中分类器与权重的选取——以加法模型解释" class="headerlink" title="$Adaboost$ 中分类器与权重的选取——以加法模型解释"></a>$Adaboost$ 中分类器与权重的选取——以加法模型解释</h2><p>对于分类器来说：<br>$$<br>f(x)&#x3D;\sum_{m&#x3D;1}^M \alpha_mG_m(x)<br>$$<br>我们针对此问题选择损失函数为：<br>$$<br>Loss &#x3D; \sum_{i&#x3D;1}^N exp(-y_if(x_i))<br>$$<br>设强分类器一共有 $M$ 个弱分类器组成，如果直接优化的话，我们需要同时优化 $2M$ 个参数，体量是大的。所以我们采取逐步学习的方法——一次只学习一组 $\alpha_m,G_m(x)$ ，然后加到强分类器中。在这种情况下我们的优化问题变为：<br>$$<br>\begin{aligned}<br>(\alpha_m,G_m(x))&amp;&#x3D;\arg\min_{\alpha,G_m}\sum_{i&#x3D;1}^{N}exp[-y_i\left(f_{m-1}\left(x_i\right)+{\alpha_m}G_m(x_i)\right)]\\<br>&amp;&#x3D;\arg\min_{\alpha,G_m}\sum_{i&#x3D;1}^N\bar{w}_{m,i}exp[-y_i{\alpha_m}G_m(x_i)]<br>\end{aligned}<br>$$</p>
+<p>此时 $\bar w_{m,i}$ 对优化问题来说是一个定值，$\bar w_{m,i} &#x3D; \prod_{m&#x3D;1}exp(-\alpha_my_iG_m(x_i))&#x3D;\frac{w_{m,i}\prod_{m&#x3D;1}Z_m}N&#x3D;Aw_{m,i}$.</p>
+<h3 id="G-m-x-的选择"><a href="#G-m-x-的选择" class="headerlink" title="$G_m(x)$ 的选择"></a>$G_m(x)$ 的选择</h3><p>我们希望误差最小，观察上面式子，此时 $\alpha_m$ 作为常量看待。因此最优化上式等价于：<br>$$<br>G_m^*(x)&#x3D;\arg\min_G\sum_{i&#x3D;1}^N\bar w_{m,i}I(y_i\neq G(x_i)) &#x3D; \arg\min_G\sum_{i&#x3D;1}^N w_{m,i}I(y_i\neq G(x_i))<br>$$<br>此分类器 $G_m^*(x)$ 即为 $AdaBoost$ 算法的基分类器 $G_m ( x )$ ，它是使得第m次迭代时加权训练数据分类误差最小的基分类器。</p>
+<h3 id="alpha-m-的求解"><a href="#alpha-m-的求解" class="headerlink" title="$\alpha_m$ 的求解"></a>$\alpha_m$ 的求解</h3><p>$$<br>\sum_{i&#x3D;1}^N\bar w_{m,i}exp(-y_i \alpha_m G(x_i))&#x3D;\sum_{y_i&#x3D;G_m(x_i)}\bar w_{m,i}e^{-\alpha_m}+\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}e^{\alpha_m}<br>$$</p>
+<p>求极值我们需要令其对 $\alpha_m$ 求偏导等于0：<br>$$<br>e^{-\alpha_m}\sum_{y_i&#x3D;G_m(x_i)}\bar w_{m,i}&#x3D;e^{\alpha_m}\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}<br>$$<br>等式两边取对数：<br>$$<br>\begin{aligned}<br>-\alpha_m + ln(\sum_{y_i&#x3D;G_m(x_i)}\bar w_{m,i})&amp;&#x3D;\alpha_m+ ln(\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}) \\<br>2\alpha_m&amp;&#x3D;ln(\frac{\sum_{y_i&#x3D; G_m(x_i)}\bar w_{m,i}}{\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}}) \\<br>2\alpha_m&amp;&#x3D;ln(\frac{\sum_{y_i&#x3D; G_m(x_i)} w_{m,i}}{\sum_{y_i\neq G_m(x_i)} w_{m,i}}) \\<br>2\alpha_m&amp;&#x3D;ln(\frac{1-\sum_{y_i\neq G_m(x_i)} w_{m,i}}{\sum_{y_i\neq G_m(x_i)} w_{m,i}}) \\<br>\alpha_m&amp;&#x3D;\frac12 ln(\frac{1-e_m}{e_m}) \\<br>\end{aligned}<br>$$<br>综上我们就能够得到 $\alpha_m$ 的取值了。</p>
+<p>因此我们知道了 $Adaboost$ 实际上就是以 $Loss &#x3D; \sum_{i&#x3D;1}^N exp(-y_if(x_i))$ 为目标函数的加法模型。</p>
  
       <!-- reward -->
       
@@ -240,12 +234,12 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/10/17/BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2023/10/29/Adaboost/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ML/" rel="tag">ML</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ML/" rel="tag">ML</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E5%99%A8/" rel="tag">分类器</a></li></ul>
 
     </footer>
   </div>
@@ -253,19 +247,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2023/10/29/Adaboost/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            Adaboost
-          
-        </div>
-      </a>
     
-    
-      <a href="/2023/10/12/Fisher%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E6%8E%A8%E5%AF%BC/" class="article-nav-link">
+      <a href="/2023/10/17/BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Fisher线性判别推导</div>
+        <div class="article-nav-title">BP神经网络</div>
       </a>
     
   </nav>
