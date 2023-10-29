@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2k</span>
+            <span class="post-count">2.1k</span>
         </span>
     </span>
 
@@ -165,7 +165,7 @@
 
 <p>因此我们再次对误差进行放缩，能够得到：<br>$$<br>\prod_{m&#x3D;1}^M\sqrt{(1-4\gamma_m^2)}\leq\prod_{m&#x3D;1}^Mexp(-2\gamma_m^2)&#x3D;exp(-2\sum_{m&#x3D;1}^M\gamma_m^2)<br>$$<br>也就是说，随着分类器的增多，指数项上不断减小，这也就表明了 $Adaboost$ 的训练误差是以指数速度下降的。</p>
 <h2 id="Adaboost-中分类器与权重的选取——以加法模型解释"><a href="#Adaboost-中分类器与权重的选取——以加法模型解释" class="headerlink" title="$Adaboost$ 中分类器与权重的选取——以加法模型解释"></a>$Adaboost$ 中分类器与权重的选取——以加法模型解释</h2><p>对于分类器来说：<br>$$<br>f(x)&#x3D;\sum_{m&#x3D;1}^M \alpha_mG_m(x)<br>$$<br>我们针对此问题选择损失函数为：<br>$$<br>Loss &#x3D; \sum_{i&#x3D;1}^N exp(-y_if(x_i))<br>$$<br>设强分类器一共有 $M$ 个弱分类器组成，如果直接优化的话，我们需要同时优化 $2M$ 个参数，体量是大的。所以我们采取逐步学习的方法——一次只学习一组 $\alpha_m,G_m(x)$ ，然后加到强分类器中。在这种情况下我们的优化问题变为：<br>$$<br>\begin{aligned}<br>(\alpha_m,G_m(x))&amp;&#x3D;\arg\min_{\alpha,G_m}\sum_{i&#x3D;1}^{N}exp[-y_i\left(f_{m-1}\left(x_i\right)+{\alpha_m}G_m(x_i)\right)]\\<br>&amp;&#x3D;\arg\min_{\alpha,G_m}\sum_{i&#x3D;1}^N\bar{w}_{m,i}exp[-y_i{\alpha_m}G_m(x_i)]<br>\end{aligned}<br>$$</p>
-<p>此时 $\bar w_{m,i}$ 对优化问题来说是一个定值，$\bar w_{m,i} &#x3D; \prod_{m&#x3D;1}exp(-\alpha_my_iG_m(x_i))&#x3D;\frac{w_{m,i}\prod_{m&#x3D;1}Z_m}N&#x3D;Aw_{m,i}$.</p>
+<p>此时 $\bar w_{m,i}$ 对优化问题来说是一个定值，$\bar w_{m,i} &#x3D; \prod_{m&#x3D;1}exp(-\alpha_my_iG_m(x_i))&#x3D;\frac{w_{m,i}\prod_{m&#x3D;1}Z_m}N&#x3D;Aw_{m,i}$。值得注意的是 $\bar w_{m+1,i}&#x3D;\bar w_{m,i}exp(-\alpha_my_iG_m(x_i))$ 这就是 $Adaboost$ 的权重更新关系。</p>
 <h3 id="G-m-x-的选择"><a href="#G-m-x-的选择" class="headerlink" title="$G_m(x)$ 的选择"></a>$G_m(x)$ 的选择</h3><p>我们希望误差最小，观察上面式子，此时 $\alpha_m$ 作为常量看待。因此最优化上式等价于：<br>$$<br>G_m^*(x)&#x3D;\arg\min_G\sum_{i&#x3D;1}^N\bar w_{m,i}I(y_i\neq G(x_i)) &#x3D; \arg\min_G\sum_{i&#x3D;1}^N w_{m,i}I(y_i\neq G(x_i))<br>$$<br>此分类器 $G_m^*(x)$ 即为 $AdaBoost$ 算法的基分类器 $G_m ( x )$ ，它是使得第m次迭代时加权训练数据分类误差最小的基分类器。</p>
 <h3 id="alpha-m-的求解"><a href="#alpha-m-的求解" class="headerlink" title="$\alpha_m$ 的求解"></a>$\alpha_m$ 的求解</h3><p>$$<br>\sum_{i&#x3D;1}^N\bar w_{m,i}exp(-y_i \alpha_m G(x_i))&#x3D;\sum_{y_i&#x3D;G_m(x_i)}\bar w_{m,i}e^{-\alpha_m}+\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}e^{\alpha_m}<br>$$</p>
 <p>求极值我们需要令其对 $\alpha_m$ 求偏导等于0：<br>$$<br>e^{-\alpha_m}\sum_{y_i&#x3D;G_m(x_i)}\bar w_{m,i}&#x3D;e^{\alpha_m}\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}<br>$$<br>等式两边取对数：<br>$$<br>\begin{aligned}<br>-\alpha_m + ln(\sum_{y_i&#x3D;G_m(x_i)}\bar w_{m,i})&amp;&#x3D;\alpha_m+ ln(\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}) \\<br>2\alpha_m&amp;&#x3D;ln(\frac{\sum_{y_i&#x3D; G_m(x_i)}\bar w_{m,i}}{\sum_{y_i\neq G_m(x_i)}\bar w_{m,i}}) \\<br>2\alpha_m&amp;&#x3D;ln(\frac{\sum_{y_i&#x3D; G_m(x_i)} w_{m,i}}{\sum_{y_i\neq G_m(x_i)} w_{m,i}}) \\<br>2\alpha_m&amp;&#x3D;ln(\frac{1-\sum_{y_i\neq G_m(x_i)} w_{m,i}}{\sum_{y_i\neq G_m(x_i)} w_{m,i}}) \\<br>\alpha_m&amp;&#x3D;\frac12 ln(\frac{1-e_m}{e_m}) \\<br>\end{aligned}<br>$$<br>综上我们就能够得到 $\alpha_m$ 的取值了。</p>
