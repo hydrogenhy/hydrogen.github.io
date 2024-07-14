@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>深度学习 |  Hy&#39;s Treasure house</title>
+      <title>《Deep Graph Infomax》论文解读 |  Hy&#39;s Treasure house</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -60,139 +60,244 @@
       
     <main class="content on">
       <section class="outer">
+  <article
+  id="post-Deep Graph Infomax"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  《Deep Graph Infomax》论文解读
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/07/14/Deep%20Graph%20Infomax/" class="article-date">
+  <time datetime="2024-07-14T12:35:44.000Z" itemprop="datePublished">2024-07-14</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
+  </div>
   
-  <ul class="ads">
-    
-        <li>
-            <a href="">
-                <img src="" width="0" alt="">
-            </a>
-        </li>
-    
-        <li>
-            <a href="">
-                <img src="" width="0" alt="">
-            </a>
-        </li>
-    
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">813</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">3 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>论文传送门：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1809.10341">click here</a></p>
+<p>推荐参考链接：</p>
+<ul>
+<li>DIM：<a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2018-10-12-11">深度学习中的互信息：无监督提取特征 | 机器之心 (jiqizhixin.com)</a></li>
+<li>$f$ 散度($D_f$)的估算：<a target="_blank" rel="noopener" href="https://kexue.fm/archives/6016">f-GAN简介：GAN模型的生产车间 - 科学空间|Scientific Spaces (kexue.fm)</a></li>
 </ul>
-  
-  
-  <article class="articles">
-    
-    
-    <h1 class="page-type-title">深度学习</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2024" class="archive-year">2024</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/07/14/Deep%20Graph%20Infomax/" class="archive-article-date">
-  <time datetime="2024-07-14T12:35:44.000Z" itemprop="datePublished">07/14</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/07/14/Deep%20Graph%20Infomax/"
-    >《Deep Graph Infomax》论文解读</a> 
-</h2>
- 
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><span id="more"></span>
 
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-  
-  </div>
-  </div>
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2023" class="archive-year">2023</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/08/17/%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA-MLP-%E7%9A%84%E5%B7%A5%E7%A8%8B%E6%9E%84%E5%BB%BA/" class="archive-article-date">
-  <time datetime="2023-08-17T11:30:57.000Z" itemprop="datePublished">08/17</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/08/17/%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA-MLP-%E7%9A%84%E5%B7%A5%E7%A8%8B%E6%9E%84%E5%BB%BA/"
-    >多层感知机(MLP)的工程构建</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA/">多层感知机</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/07/18/DCRNN/" class="archive-article-date">
-  <time datetime="2023-07-18T12:35:44.000Z" itemprop="datePublished">07/18</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2023/07/18/DCRNN/"
-    >DCRNN</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
+<p>图神经网络已经有了很大发展，但大多数成功的方法使用的是监督学习，而在现实中大多数的图数据事实上是未标记的。因此针对这种无标签的图信息，一种<strong>无监督&#x2F;自监督学习方法</strong>是重要的。</p>
+<p>目前的无监督表示学习<strong>大多依赖于随机游走</strong>方法，其有如下的缺点：</p>
+<ul>
+<li>过分强调了邻居之间的信息，而牺牲了整体的结构信息</li>
+<li>性能高度依赖于超参设置</li>
+<li>可解释性较差，即无法确定随机游走是不是真的提供了有用信息（假设节点与邻居较为相似的观点是一种归纳偏置）</li>
+</ul>
+<p>因此本文提出了一种<strong>基于互信息</strong>得到的<strong>无监督图学习方法</strong>。</p>
+<p>具体来说，本文将<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1808.06670">这篇论文</a>的 <code>Deep InfoMax</code> 思想运用到了图神经网络中。</p>
+<hr>
+<h3 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h3><p><del>（我感觉这篇论文就是把CV中的方法直接运用到图神经网络中，似乎并没有改变什么）</del></p>
+<h4 id="我们有什么？"><a href="#我们有什么？" class="headerlink" title="我们有什么？"></a>我们有什么？</h4><ol>
+<li>对于图上每一个节点，我们有他们的特征向量集合 $X&#x3D;\{\vec {x_1}, \vec {x_2}, \dots,\vec {x_N}\}$</li>
+<li>我们有邻接矩阵 $A$，论文中设置无边权，即 $A_{ij}\in\{0,1\}$</li>
+</ol>
+<h4 id="我们要做什么？"><a href="#我们要做什么？" class="headerlink" title="我们要做什么？"></a>我们要做什么？</h4><p>我们希望能够训练出一个编码器 ${\mathcal E} : \mathbb{R}^{N\times F} \times \mathbb{R}^{N\times N} \to \mathbb{R}^{N\times F^{\prime}}$，使得 ${\mathcal E}(X,A)&#x3D;H&#x3D;\{\vec {h_1}, \vec {h_2}, \dots,\vec {h_N}\}$表示每个节点编码后的高级表示。</p>
+<h4 id="我们怎么做？"><a href="#我们怎么做？" class="headerlink" title="我们怎么做？"></a>我们怎么做？</h4><p>核心思想为<strong>局部-全局互信息最大化</strong>。</p>
+<p>具体来说，运用图卷积方法作为编码器 ${\mathcal E}$ ，获得每个节点的表示 $H$ 。事实上，图卷积得到的向量是<strong>以节点为中心的图的patch</strong>。这是<strong>局部</strong>信息。</p>
+<p>接下来获得<strong>全局</strong>的图级向量表示 $\vec s$。定义函数 ${\mathcal R} : \mathbb{R}^{N\times F} \to \mathbb{R}^{F}$，实现了从patch到全局的信息汇总：$\vec s&#x3D;\mathcal R({\mathcal E}(X,A))$。</p>
+<p>接下来的步骤与对比学习类似，构造图的负样例，得到负样本图上的每一个patch的表示 $\tilde H$。与对比学习不同的是，这里希望 $H$ 与 $\vec s$ 尽可能接“近”，$\tilde H$ 与 $\vec s$ 尽可能”远“。如下图：</p>
+<p><img src="/../pic/image-20240715001048611.png"></p>
+<p>而这里刻画”远近“是通过一个判别器 ${\mathcal D}$ 来实现的，这是网络<strong>学出来的</strong>，具体而言：<br>$$<br>\mathcal D(\vec h,\vec s)&#x3D;\sigma(\vec h^TW\vec s)<br>$$<br>整个方法的优化目标为优化如下函数：</p>
+<p><img src="/../pic/image-20240715012617347.png"></p>
+<p><strong>优化这个函数事实上就是极大化互信息量</strong>。至于为什么，<strong>参考链接</strong>中给出的两个网址较为清晰全面的进行了推导。</p>
+<p>总结！整个过程可以分为五个部分：</p>
+<p><img src="/../pic/image-20240715012655032.png"></p>
+<h4 id="图上的相关理论推导"><a href="#图上的相关理论推导" class="headerlink" title="图上的相关理论推导"></a>图上的相关理论推导</h4><hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3> 
+      <!-- reward -->
       
     </div>
-  </div>
-  
-  
+    
 
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/07/14/Deep%20Graph%20Infomax/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/" rel="tag">信息论</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">图神经网络</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/10/29/Adaboost/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Adaboost</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.staticfile.org/valine/1.4.16/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "YQEs4iho5JeuvvyqTsOIcGUu-gzGzoHsz",
+    app_key: "NJrr8Gl5ULTBNesNuCYYbDYm",
+    path: window.location.pathname,
+    avatar: "retro",
+    placeholder: "期待您的评论！",
+    recordIP: false,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
   
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -331,6 +436,22 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
 
 <script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
 <link
