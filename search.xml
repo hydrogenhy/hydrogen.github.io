@@ -69,8 +69,7 @@
 <h4 id="我们要做什么？"><a href="#我们要做什么？" class="headerlink" title="我们要做什么？"></a>我们要做什么？</h4><p>我们希望能够训练出一个编码器 ${\mathcal E} : \mathbb{R}^{N\times F} \times \mathbb{R}^{N\times N} \to \mathbb{R}^{N\times F^{\prime}}$，使得 ${\mathcal E}(X,A)&#x3D;H&#x3D;\{\vec {h_1}, \vec {h_2}, \dots,\vec {h_N}\}$表示每个节点编码后的高级表示。</p>
 <h4 id="我们怎么做？"><a href="#我们怎么做？" class="headerlink" title="我们怎么做？"></a>我们怎么做？</h4><p>核心思想为<strong>局部-全局互信息最大化</strong>。</p>
 <p>具体来说，运用图卷积方法作为编码器 ${\mathcal E}$ ，获得每个节点的表示 $H$ 。事实上，图卷积得到的向量是<strong>以节点为中心的图的patch</strong>。这是<strong>局部</strong>信息。</p>
-<p>接下来获得<strong>全局</strong>的图级向量表示 $\vec s$。定义函数 ${\mathcal R} : \mathbb{R}^{N\times F} \to \mathbb{R}^{F}$，实现了从patch到全局的信息汇总：$\vec s&#x3D;\mathcal R({\mathcal E}(X,A))$。</p>
-<p>接下来的步骤与对比学习类似，构造图的负样例，得到负样本图上的每一个patch的表示 $\tilde H$。与对比学习不同的是，这里希望 $H$ 与 $\vec s$ 尽可能接“近”，$\tilde H$ 与 $\vec s$ 尽可能”远“。如下图：</p>
+<p>接下来获得<strong>全局</strong>的图级向量表示 $\vec s$。定义函数 ${\mathcal R} : \mathbb{R}^{N\times F} \to \mathbb{R}^{F}$，实现了从patch到全局的信息汇总：$\vec s&#x3D;\mathcal R({\mathcal E}(X,A))$。在实验中使用的就是均值函数：<br>$$<br>\mathcal R(H)&#x3D;\sigma\left(\frac1N\sum_{i&#x3D;1}^N\vec{h}_i\right)<br>$$<br>接下来的步骤与对比学习类似，构造图的负样例，得到负样本图上的每一个patch的表示 $\tilde H$。与对比学习不同的是，这里希望 $H$ 与 $\vec s$ 尽可能接“近”，$\tilde H$ 与 $\vec s$ 尽可能”远“。如下图：</p>
 <p><img src="/../pic/image-20240715001048611.png"></p>
 <p>而这里刻画”远近“是通过一个判别器 ${\mathcal D}$ 来实现的，这是网络<strong>学出来的</strong>，具体而言：<br>$$<br>\mathcal D(\vec h,\vec s)&#x3D;\sigma(\vec h^TW\vec s)<br>$$<br>整个方法的优化目标为优化如下函数：</p>
 <p><img src="/../pic/image-20240715012617347.png"></p>
@@ -78,7 +77,16 @@
 <p>总结！整个过程可以分为五个部分：</p>
 <p><img src="/../pic/image-20240715012655032.png"></p>
 <h4 id="图上的相关理论推导"><a href="#图上的相关理论推导" class="headerlink" title="图上的相关理论推导"></a>图上的相关理论推导</h4><hr>
-<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3>]]></content>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><h4 id="Transductive-learning——直推式学习"><a href="#Transductive-learning——直推式学习" class="headerlink" title="Transductive learning——直推式学习"></a>Transductive learning——直推式学习</h4><p>编码器采用GCN网络：<br>$$<br>\mathcal{E}(\mathbf{X},\mathbf{A})&#x3D;\sigma\left(\mathbf{\hat{D}}^{-\frac{1}{2}}\mathbf{\hat{A}}\mathbf{\hat{D}}^{-\frac{1}{2}}\mathbf{X}\mathbf{\Theta}\right)<br>$$<br>负样例的构造方式为：讲 $X$ 打乱，即每个节点的位置不变，但特征变成其他节点了。至于为什么要保留原图结构，论文给出的说法为 “we find those that preserve the graph structure result in the strongest features.”</p>
+<h4 id="Inductive-learning-on-large-graphs——大图上的归纳学习"><a href="#Inductive-learning-on-large-graphs——大图上的归纳学习" class="headerlink" title="Inductive learning  on large graphs——大图上的归纳学习"></a>Inductive learning  on large graphs——大图上的归纳学习</h4><p>编码参考 GraphSAGE-GCN 论文中的方法：<br>$$<br>\mathrm{MP}(\mathbf{X},\mathbf{A})&#x3D;\mathrm{\hat{D}}^{-1}\mathrm{\hat{A}X}\Theta<br>$$<br>改变后得到编码器为：<br>$$<br>\widetilde{\mathrm{MP}}(\mathbf{X},\mathbf{A})&#x3D;\sigma\left(\mathbf{X}\mathbf{\Theta}^{\prime}|\mathrm{MP}(\mathbf{X},\mathbf{A})\right)\quad\mathcal{E}(\mathbf{X},\mathbf{A})&#x3D;\widetilde{\mathrm{MP}}_3(\widetilde{\mathrm{MP}}_2(\widetilde{\mathrm{MP}}_1(\mathbf{X},\mathbf{A}),\mathbf{A}),\mathbf{A})<br>$$<br>又因为图比较大，因此整个图的汇总向量是不方便求解的，因此采用了<strong>采样</strong>以及<strong>minibatch上的汇总向量</strong>。</p>
+<p><img src="/../pic/image-20240715130935648.png"></p>
+<img src="../pic/image-20240715131002076.png" style="zoom:80%;" />
+
+<p>创造负样例的方式与直推式学习一致，不过对每一个子图patch来进行这种操作。</p>
+<h4 id="Inductive-learning-on-large-graphs——多图上的归纳学习"><a href="#Inductive-learning-on-large-graphs——多图上的归纳学习" class="headerlink" title="Inductive learning on large graphs——多图上的归纳学习"></a>Inductive learning on large graphs——多图上的归纳学习</h4><p>编码器为：a three-layer mean-pooling model with dense skip connections<br>$$<br>\mathbf{H}<em>{1}&#x3D;\sigma\left(\mathrm{MP}</em>{1}(\mathbf{X},\mathbf{A})\right) \quad\quad<br>\mathbf{H}<em>{2}&#x3D;\sigma\left(\mathrm{MP}</em>{2}(\mathbf{H}<em>{1}+\mathbf{XW}</em>{\mathrm{skip}},\mathbf{A})\right)<br>$$<br>得到：<br>$$<br>\mathcal{E}(\mathbf{X},\mathbf{A}) &#x3D;\sigma\left(\mathbf{MP}<em>{3}(\mathbf{H}</em>{2}+\mathbf{H}<em>{1}+\mathbf{XW}</em>{\mathrm{skip}},\mathbf{A})\right)<br>$$<br>负样例采取的方式为随机采样 (randomly sampled training graphs)，也采用了dropout。</p>
+<h4 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h4><p><img src="/../pic/image-20240715131745833.png"></p>
+<p><img src="/../pic/image-20240715131824999.png"></p>
+]]></content>
       <categories>
         <category>深度学习</category>
         <category>图神经网络</category>
