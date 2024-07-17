@@ -41,6 +41,55 @@
       </tags>
   </entry>
   <entry>
+    <title>《Graph Entropy Guided Node Embedding Dimension Selection for Graph Neural Networks》论文解读</title>
+    <url>/2024/07/17/MinGE/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://www.ijcai.org/proceedings/2021/381">click here</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>在Node Embedding Dimension Selection (NEDS)问题中，对于编码维度的设置，常使用梯度搜索或者经验知识的方法来进行选择，但这种方法面临着<strong>庞大的计算量和较差的模型表现</strong>等问题。</p>
+<p>而本文受到维度选择工作的启发，以最小熵原理（minimum entropy principle）重新审视这个问题，提出了<strong>Minimum Graph Entropy 算法</strong>，特别的，从两方面来考虑熵：</p>
+<ul>
+<li>从feature层面上</li>
+<li>从structure层面上</li>
+</ul>
+<p>结果也证明了这种方法的有效性</p>
+<p><strong>注：这篇论文是设计了一种算法找到最优的编码维度空间大小，而非设计了一种深度学习方法。</strong></p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240717142624016.png"></p>
+<p>定义图熵为：<br>$$<br>H_g&#x3D;H_f+\lambda H_s<br>$$<br>其中 $H_f$ 是feature熵， $H_s$ 是structure熵。通过设置 $H_g&#x3D;0$ 我们能够得到合适的embedding维度 $n$。</p>
+<h4 id="Feature-Entropy"><a href="#Feature-Entropy" class="headerlink" title="Feature Entropy"></a>Feature Entropy</h4><p>说道熵就一定要提到概率分布，那么这里的概率分布如何定义的呢？<br>$$<br>P(v_i,v_j)&#x3D;\frac{e^{\langle v_i,v_j\rangle}}{\sum_{i,j}e^{\langle v_i,v_j\rangle}},<br>$$<br>其中 $\langle v_i,v_j\rangle$ 代表两个节点的embedding向量的点乘。<del>至于点乘越大概率越大是否合理、是否有意义呢</del></p>
+<p>简单的化简过后，我们便能够得到熵的表达式：<br>$$<br>H_f&#x3D;logZ-\frac{1}{Z}\sum_{ij}e^{\langle v_i,v_j\rangle}\langle v_i,v_j\rangle, \quad Z&#x3D;\sum_{i,j}e^{\langle v_i,v_j\rangle}<br>$$<br>接下来用<strong>样本的均值来代替分布的期望</strong>：<br>$$<br>Z&#x3D;\sum_{ij}e^{\langle v_{i},v_{j}\rangle}&#x3D;N^{2}\frac{1}{N^{2}}\sum_{ij}e^{\langle v_{i},v_{j}\rangle}\approx N^{2}E_{v_{i},v_{j}}(e^{\langle v_{i},v_{j}\rangle})<br>$$</p>
+<p>$$<br>\sum_{ij}e^{\langle v_{i},v_{j}\rangle}\langle v_{i},v_{j}\rangle&#x3D;N^{2}\frac{1}{N^{2}}\sum_{ij}e^{\langle v_{i},v_{j}\rangle}\langle v_{i},v_{j}\rangle\approx N^{2}E_{v_{i},v_{j}}(e^{\langle v_{i},v_{j}\rangle}\langle v_{i},v_{j}\rangle)<br>$$</p>
+<p>从而代回熵的计算公式，我们有：<br>$$<br>H_f&#x3D;logN^2+logE_{v_i,v_j}(e^{\langle v_i,v_j\rangle})-\frac{E_{v_i,v_j}(e^{\langle v_i,v_j\rangle}\langle v_i,v_j\rangle)}{E_{v_i,v_j}(e^{\langle v_i,v_j\rangle})}<br>$$<br>接下来遇到的问题就是，点乘并不好计算，因为我不知道编码后向量的具体数值。此处作者采用的方式为：<strong>将embedding映射到半径为 $\sqrt n$ 的 $n$ 维超球体上</strong>。此时有 $\langle v_i,v_j\rangle&#x3D;n\cdot\cos(\theta)$。</p>
+<p><img src="/../pic/image-20240717155547471.png"></p>
+<p>为了方便计算，将一个向量固定为 $y&#x3D;(1, 0,\cdots,0)$，这样能够的得到 $\cos \theta&#x3D;\varphi_1$</p>
+<p>根据文献，能够知道角度的概率密度函数（这是怎么找到的）：<br>$$<br>P_n(\theta)&#x3D;\frac{\Gamma(\frac{n}{2})}{\Gamma(\frac{n-1}{2})\sqrt{\pi}}sin^{n-2}\theta.<br>$$<br>最终<strong>计算点乘的期望</strong>巧妙地转换为<strong>计算角度的期望</strong>：<br>$$<br>E(e^{ncos\theta}ncos\theta)&#x3D;\int_0^\pi e^{ncos\theta}ncos\theta P_n(\theta)d_\theta<br>$$</p>
+<p>$$<br>E(e^{ncos\theta})&#x3D;\int_0^\pi e^{ncos\theta}P_n(\theta)d_\theta<br>$$</p>
+<h4 id="结构熵"><a href="#结构熵" class="headerlink" title="结构熵"></a>结构熵</h4><p>结构熵考虑的是two-hop邻居。</p>
+<p>根据邻接矩阵的特点，两跳邻居便可以通过 $A^2&#x3D;A^TA$ 来进行刻画。进一步得到能够描述度信息的向量 $D_r$：<br>$$<br>D_r&#x3D;D^TA_r^2, \quad A_r^2[i,j]&#x3D;\frac{A^2[i,j]}{\sum_jA^2[i,j]}<br>$$<br>从而有：<br>$$<br>H_s&#x3D;-\sum_i^NP_ilogP_i&#x3D;-\sum_i\frac{D_r[i]}{\sum_iD_r[i]}log(\frac{D_r[i]}{\sum_iD_r[i]}),<br>$$<br>有一些问题：</p>
+<ul>
+<li>邻接矩阵平方后得到的是二跳邻居的连接信息，此时没有一跳邻居的信息。</li>
+<li>$D_r$ 的意义解释是什么。</li>
+</ul>
+<h4 id="总结来看"><a href="#总结来看" class="headerlink" title="总结来看"></a>总结来看</h4><p>最终我们目标为求解 $H_g&#x3D;0$ 时候的 $n$。<br>$$<br>H_{g}&#x3D;H_f+\lambda H_s &#x3D;logN^2+log\int_0^\pi e^{ncos\theta}P_n(\theta)d_\theta - \frac{\int_0^\pi e^{ncos\theta}ncos\theta P_n(\theta)d_\theta}{\int_0^\pi e^{ncos\theta}P_n(\theta)d_\theta}<br>-\lambda\sum_{i}\frac{D_{r}[i]}{\sum_{i}D_{r}[i]}log(\frac{D_{r}[i]}{\sum_{i}D_{r}[i]})<br>$$<br>整体过程也比较清晰，重复：设计的是<strong>算法</strong>，<strong>不是模型</strong>：</p>
+<p><img src="/../pic/image-20240717160733853.png"></p>
+<p><strong>能否将其结合到图网络中，形成端到端的模型？</strong></p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><p>文中进行了节点分类与链路预测任务。<strong>从结果上看，在算法得到的维度数量上的实验结果，为最优或接近最优的效果，证明了有效性。</strong></p>
+<p><img src="/../pic/image-20240717160924478.png"></p>
+<p>这段话也表现了此方法的优越性：</p>
+<p><img src="/../pic/image-20240717161012388.png"></p>
+<p>另外文中还分析了时间复杂度等问题，说明了其在时间上的消耗是可接受的。</p>
+<p><img src="/../pic/image-20240717161101508.png"></p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>信息论</tag>
+        <tag>图神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《Deep Graph Infomax》论文解读</title>
     <url>/2024/07/14/Deep%20Graph%20Infomax/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://arxiv.org/pdf/1809.10341">click here</a></p>
