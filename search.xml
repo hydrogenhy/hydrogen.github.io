@@ -4,12 +4,12 @@
     <title>Hi, 很高兴见到你</title>
     <url>/2023/07/17/Hi-%E5%BE%88%E9%AB%98%E5%85%B4%E8%A7%81%E5%88%B0%E4%BD%A0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>
-        <div id="aplayer-EVHpzYKk" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
+        <div id="aplayer-tVoIbLMN" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
             <pre class="aplayer-lrc-content"></pre>
         </div>
         <script>
           var ap = new APlayer({
-            element: document.getElementById("aplayer-EVHpzYKk"),
+            element: document.getElementById("aplayer-tVoIbLMN"),
             narrow: false,
             autoplay: false,
             showlrc: false,
@@ -38,6 +38,60 @@
 ]]></content>
       <tags>
         <tag>About</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《Graph Information Bottleneck》论文解读</title>
+    <url>/2024/07/24/DGIB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://arxiv.org/abs/2010.12811">click here</a></p>
+<p>Code：<a href="https://github.com/snap-stanford/GIB">GIB(github.com)</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本篇论文是2020Neurips上的论文。</p>
+<p>这篇论文将<strong>信息瓶颈理论</strong>创新性地应用于图神经网络中，具体来说，文章核心围绕着信息瓶颈理论的——minimal sufficient 特点展开的，从理论推到、实例化、实验证明等方面证明了这种方法的重要性</p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>信息论</tag>
+        <tag>图神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《Graph Information Bottleneck》论文解读</title>
+    <url>/2024/07/24/GIB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://arxiv.org/abs/2010.12811">click here</a></p>
+<p>Code：<a href="https://github.com/snap-stanford/GIB">GIB(github.com)</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本篇论文是2020Neurips上的论文。</p>
+<p>这篇论文将<strong>信息瓶颈理论</strong>创新性地应用于图神经网络中，具体来说，文章核心围绕着信息瓶颈理论的——minimal sufficient 特点展开的，从理论推导、实例化、实验证明等方面证明了这种方法的重要性。</p>
+<span id="more"></span>
+
+<p>信息瓶颈理论的最小-充足特点，能够在<strong>保证特征表达</strong>的同时很好地<strong>提高模型的鲁棒性</strong>。但其若直接应用在图上，会有两个较大的<strong>问题</strong>：</p>
+<ul>
+<li>IB 的模型假设数据集中的训练示例是<strong>独立的和同分布</strong>的（$i.i.d$）。对于图结构数据，这个假设<strong>不再成立</strong>。</li>
+<li><strong>结构</strong>信息对于表示图结构数据是必不可少的。</li>
+</ul>
+<p>因此如何建模这个问题至关重要。如何将IB理论迁移到图中，让我们正式开始了解这篇论文的内容。</p>
+<hr>
+<h3 id="前置理论"><a href="#前置理论" class="headerlink" title="前置理论"></a>前置理论</h3><h4 id="图上的信息瓶颈理论"><a href="#图上的信息瓶颈理论" class="headerlink" title="图上的信息瓶颈理论"></a>图上的信息瓶颈理论</h4><p><img src="/../pic/image-20240725180435634.png"></p>
+<p>图信息瓶颈的核心公式如上图所示，旨在<strong>增加</strong>潜在表示 $Z$ 与目标 $Y$ 之间的互信息，同时<strong>减少</strong>潜在表示 $Z$ 与原始特征 $X$ 之间的互信息。这也就是所谓的“最小 - 充足”原则。</p>
+<p>针对之前提到的<strong>两个问题</strong>，文中使用local-dependence assumption来限制 $P(Z|D)$ 的搜索域，同时运用Markov chain来逐层对feature和structure进行提取，使IB原则迁移到图中。</p>
+<p><img src="/../pic/image-20240725181530343.png" alt="local-dependence assumption"></p>
+<p><strong>local-dependence assumption</strong>：点 $v$ 只与他 $k$ 跳邻居有关，与其他节点是独立的。</p>
+<p><img src="D:\blog\source\pic\image-20240725181855813.png" alt="Markov chain"></p>
+<p><strong>Markov chain</strong>：第 $l$ 层图结构信息只与原始图结构 $A$ 和第 $l-1$ 层特征信息有关，第 $l$ 层特征信息只与第 $l$ 层图结构信息和第 $l-1$ 层特征信息有关。</p>
+<p>所以优化目标函数：<br>$$<br>\min_{\mathbb{P}(Z_X^{(L)}|\mathcal{D})\in\Omega}\mathrm{GIB}_\beta(\mathcal{D},Y;Z_X^{(L)})\triangleq\left[-I(Y;Z_X^{(L)})+\beta I(\mathcal{D};Z_X^{(L)})\right]<br>$$<br>实际上就是在优化两个分布：$\mathbb{P}(Z_X^{(l)}|Z_X^{(l-1)},Z_A^{(l)}),\ \mathbb{P}(Z_A^{(l)}|Z_X^{(l-1)},A)$。</p>
+<h4 id="GIB的上下界"><a href="#GIB的上下界" class="headerlink" title="GIB的上下界"></a>GIB的上下界</h4><h4 id=""><a href="#" class="headerlink" title=""></a></h4><hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><hr>
+<h3 id="可能深入方向"><a href="#可能深入方向" class="headerlink" title="可能深入方向"></a>可能深入方向</h3>]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>信息论</tag>
+        <tag>图神经网络</tag>
       </tags>
   </entry>
   <entry>
@@ -654,12 +708,12 @@
     <title>《她说》指弹</title>
     <url>/2023/07/20/%E3%80%8A%E5%A5%B9%E8%AF%B4%E3%80%8B%E6%8C%87%E5%BC%B9/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>
-        <div id="aplayer-OzGJiphY" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
+        <div id="aplayer-iMIDoBRg" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
             <pre class="aplayer-lrc-content"></pre>
         </div>
         <script>
           var ap = new APlayer({
-            element: document.getElementById("aplayer-OzGJiphY"),
+            element: document.getElementById("aplayer-iMIDoBRg"),
             narrow: false,
             autoplay: false,
             showlrc: false,
