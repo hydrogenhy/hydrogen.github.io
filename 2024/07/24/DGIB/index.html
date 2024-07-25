@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>《Graph Information Bottleneck》论文解读 |  Hy&#39;s Treasure house</title>
+      <title>《Dynamic Graph Information Bottleneck》论文解读 |  Hy&#39;s Treasure house</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -72,7 +72,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  《Graph Information Bottleneck》论文解读
+  《Dynamic Graph Information Bottleneck》论文解读
 </h1>
  
 
@@ -81,7 +81,7 @@
      
     <div class="article-meta">
       <a href="/2024/07/24/DGIB/" class="article-date">
-  <time datetime="2024-07-24T08:05:10.000Z" itemprop="datePublished">2024-07-24</time>
+  <time datetime="2024-07-24T12:03:13.000Z" itemprop="datePublished">2024-07-24</time>
 </a> 
   <div class="article-category">
     <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">100</span>
+            <span class="post-count">124</span>
         </span>
     </span>
 
@@ -116,10 +116,10 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>论文传送门：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2010.12811">click here</a></p>
-<p>Code：<a target="_blank" rel="noopener" href="https://github.com/snap-stanford/GIB">GIB(github.com)</a></p>
-<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本篇论文是2020Neurips上的论文。</p>
-<p>这篇论文将<strong>信息瓶颈理论</strong>创新性地应用于图神经网络中，具体来说，文章核心围绕着信息瓶颈理论的——minimal sufficient 特点展开的，从理论推到、实例化、实验证明等方面证明了这种方法的重要性</p>
+  <p>论文传送门：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.06716">click here</a></p>
+<p>Code：<a target="_blank" rel="noopener" href="https://github.com/RingBDStack/DGIB/tree/main">DGIB(github.com)</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本篇论文是2024WWW上的论文。</p>
+<p>这篇论文将<strong>信息瓶颈理论</strong>创新性地应用于动态图神经网络中，遇上一篇论文类似，文章核心围绕着信息瓶颈理论的——minimal sufficient 特点展开。但动态图具有时间特征，因此在时间特征上的编码一致性是重要的，本文将minimal sufficient进行扩展，<strong>得到Minimal-Sufficient-Consensual (MSC)原则</strong>。</p>
  
       <!-- reward -->
       

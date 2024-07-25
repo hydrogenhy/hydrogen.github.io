@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">559</span>
+            <span class="post-count">1.1k</span>
         </span>
     </span>
 
@@ -101,7 +101,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">2 分钟</span>
+            <span class="post-count">3 分钟</span>
         </span>
     </span>
 </div>
@@ -129,18 +129,65 @@
 </ul>
 <p>因此如何建模这个问题至关重要。如何将IB理论迁移到图中，让我们正式开始了解这篇论文的内容。</p>
 <hr>
-<h3 id="前置理论"><a href="#前置理论" class="headerlink" title="前置理论"></a>前置理论</h3><h4 id="图上的信息瓶颈理论"><a href="#图上的信息瓶颈理论" class="headerlink" title="图上的信息瓶颈理论"></a>图上的信息瓶颈理论</h4><p><img src="/../pic/image-20240725180435634.png"></p>
+<h3 id="前置理论"><a href="#前置理论" class="headerlink" title="前置理论"></a>前置理论</h3><p><img src="/../pic/image-20240725194555026.png"></p>
+<h4 id="图上的信息瓶颈理论"><a href="#图上的信息瓶颈理论" class="headerlink" title="图上的信息瓶颈理论"></a>图上的信息瓶颈理论</h4><p><img src="/../pic/image-20240725180435634.png"></p>
 <p>图信息瓶颈的核心公式如上图所示，旨在<strong>增加</strong>潜在表示 $Z$ 与目标 $Y$ 之间的互信息，同时<strong>减少</strong>潜在表示 $Z$ 与原始特征 $X$ 之间的互信息。这也就是所谓的“最小 - 充足”原则。</p>
 <p>针对之前提到的<strong>两个问题</strong>，文中使用local-dependence assumption来限制 $P(Z|D)$ 的搜索域，同时运用Markov chain来逐层对feature和structure进行提取，使IB原则迁移到图中。</p>
 <p><img src="/../pic/image-20240725181530343.png" alt="local-dependence assumption"></p>
 <p><strong>local-dependence assumption</strong>：点 $v$ 只与他 $k$ 跳邻居有关，与其他节点是独立的。</p>
-<p><img src="D:\blog\source\pic\image-20240725181855813.png" alt="Markov chain"></p>
+<p><img src="/../pic/image-20240725181855813.png" alt="Markov chain"></p>
 <p><strong>Markov chain</strong>：第 $l$ 层图结构信息只与原始图结构 $A$ 和第 $l-1$ 层特征信息有关，第 $l$ 层特征信息只与第 $l$ 层图结构信息和第 $l-1$ 层特征信息有关。</p>
-<p>所以优化目标函数：<br>$$<br>\min_{\mathbb{P}(Z_X^{(L)}|\mathcal{D})\in\Omega}\mathrm{GIB}_\beta(\mathcal{D},Y;Z_X^{(L)})\triangleq\left[-I(Y;Z_X^{(L)})+\beta I(\mathcal{D};Z_X^{(L)})\right]<br>$$<br>实际上就是在优化两个分布：$\mathbb{P}(Z_X^{(l)}|Z_X^{(l-1)},Z_A^{(l)}),\ \mathbb{P}(Z_A^{(l)}|Z_X^{(l-1)},A)$。</p>
-<h4 id="GIB的上下界"><a href="#GIB的上下界" class="headerlink" title="GIB的上下界"></a>GIB的上下界</h4><h4 id=""><a href="#" class="headerlink" title=""></a></h4><hr>
-<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><hr>
-<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><hr>
-<h3 id="可能深入方向"><a href="#可能深入方向" class="headerlink" title="可能深入方向"></a>可能深入方向</h3> 
+<p>所以优化目标函数：<br>$$<br>\min_{\mathbb{P}(Z_X^{(L)}|\mathcal{D})\in\Omega}\mathrm{GIB}_\beta(\mathcal{D},Y;Z_X^{(L)})\triangleq\left[-I(Y;Z_X^{(L)})+\beta I(\mathcal{D};Z_X^{(L)})\right]<br>$$<br>实际上就是在优化两个分布：$\mathbb P(Z_X^{(l)}|Z_X^{(l-1)},Z_A^{(l)}),\ \mathbb{P}(Z_A^{(l)}|Z_X^{(l-1)},A)$。</p>
+<h4 id="GIB的变分界"><a href="#GIB的变分界" class="headerlink" title="GIB的变分界"></a>GIB的变分界</h4><p>具体证明可在appendix中找到。</p>
+<p>(1) $I(Y;Z_X^{(L)})$ 的下界：</p>
+<p><img src="/../pic/image-20240725191245373.png"></p>
+<p><del>为什么我看附录感觉第二个加号应该是减号</del></p>
+<p>(2) $I(\mathcal D; Z_X^{(L)})$ 的上界：</p>
+<p><img src="/../pic/image-20240725191310666.png"></p>
+<p>所以模型中<strong>优化函数实际上优化的是GBI的上界</strong>。</p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><h4 id="算法过程"><a href="#算法过程" class="headerlink" title="算法过程"></a>算法过程</h4><p>本文给出了两个GIB使用方法：GIB-Cat（基于categorical distributions）和GIB-Bern（基于Bernoulli distribution）。</p>
+<p>第三步的邻居采样应用了图注意力机制网络（GAT）来计算目标节点邻居的注意力。</p>
+<p>此外：</p>
+<ul>
+<li>GIB-Cat将注意力值作为分类分布的参数，从多跳邻居中采样 $k$ 个节点构成 $Z_{A,v}^{(l+1)}$（Algorithm 2）</li>
+<li>GIB-Bern则是将注意力值（softmax替换为sigmoid）作为对邻居分别独立采样的伯努利分布的参数（Algorithm 3）</li>
+</ul>
+<p>第3、7步使用了重参数化技巧。</p>
+<p><img src="/../pic/image-20240725191938833.png"></p>
+<p><img src="/../pic/image-20240725192004626.png"></p>
+<h4 id="训练目标"><a href="#训练目标" class="headerlink" title="训练目标"></a>训练目标</h4><ul>
+<li><p>$\widehat{AIB}$的估计：对于两种分布</p>
+<p><img src="/../pic/image-20240725192252644.png"></p>
+</li>
+<li><p>$\widehat{XIB}$的估计：假设 $\mathbb Q(Z_X^{(l)})$ 服从混合的高斯分布，具体而言，每一个点的分布服从于若干高斯分布的加权求和，其中<strong>权重、均值、方差是可学习的</strong>。</p>
+<p><img src="/../pic/image-20240725192353031.png"></p>
+</li>
+</ul>
+<p>至此便有：$I(\mathcal D;Z_X^{(L)})\to\sum_{l\in S_A}\widehat{\mathrm{AIB}}^{(l)}+\sum_{l\in S_X}\widehat{\mathrm{XIB}}^{(l)}$。</p>
+<ul>
+<li><p>$I(Y,Z_X^{(L)})$的估计：通过忽略常量，得</p>
+<p><img src="/../pic/image-20240725193036315.png"></p>
+</li>
+</ul>
+<p>至此完成了理论到实际的转换。</p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><p>本文针对性的对鲁棒性进行了验证。</p>
+<ul>
+<li><p>鲁棒性检验，使用Nettack方式，两种测试模式：模型训练后攻击（Evasive）和模型训练前攻击（Poisoning）。</p>
+<p><img src="/../pic/image-20240725194147099.png"></p>
+</li>
+<li><p>消融实验，使用不停地训练目标</p>
+<p><img src="/../pic/image-20240725194249685.png"></p>
+<p>只使用AIB或XIB，那岂不是没有了特征与目标之间的训练？？？</p>
+</li>
+<li><p>对节点特征的噪声攻击：</p>
+<p><img src="/../pic/image-20240725194450796.png"></p>
+</li>
+</ul>
+<hr>
+<h3 id="可能深入方向"><a href="#可能深入方向" class="headerlink" title="可能深入方向"></a>可能深入方向</h3><p>本文图的结构服务于特征 $Z$ 的生成，并没有显式的计算结构熵，或许可以将结构熵加入，进一步简化图本身的复杂度，来更好的对信息进行抽取。</p>
+ 
       <!-- reward -->
       
     </div>
@@ -221,7 +268,7 @@
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            《Graph Information Bottleneck》论文解读
+            《Dynamic Graph Information Bottleneck》论文解读
           
         </div>
       </a>
