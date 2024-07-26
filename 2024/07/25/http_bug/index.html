@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>《Structural Entropy Based Graph Structure Learning for Node Classification》论文解读 |  Hy&#39;s Treasure house</title>
+      <title>按钮无法使用与数学公式无法显示bug修复 |  Hy&#39;s Treasure house</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -61,7 +61,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-Structural Entropy based GSL"
+  id="post-http_bug"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -72,7 +72,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  《Structural Entropy Based Graph Structure Learning for Node Classification》论文解读
+  按钮无法使用与数学公式无法显示bug修复
 </h1>
  
 
@@ -80,11 +80,11 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2024/07/18/Structural%20Entropy%20based%20GSL/" class="article-date">
-  <time datetime="2024-07-18T05:28:20.000Z" itemprop="datePublished">2024-07-18</time>
+      <a href="/2024/07/25/http_bug/" class="article-date">
+  <time datetime="2024-07-25T11:03:13.000Z" itemprop="datePublished">2024-07-25</time>
 </a> 
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
+    <a class="article-category-link" href="/categories/test-categories/">test_categories</a>
   </div>
   
 <div class="word_count">
@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2.1k</span>
+            <span class="post-count">872</span>
         </span>
     </span>
 
@@ -101,7 +101,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">8 分钟</span>
+            <span class="post-count">3 分钟</span>
         </span>
     </span>
 </div>
@@ -116,57 +116,42 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>论文传送门：<a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/28679">click here</a></p>
-<p>可参考资料：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2201.05540">$CoGSL$</a></p>
-<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>由于GNN的性能高度依赖于输入图结构的质量，因此如今学者已经提出了各种**图结构学习(GSL)**技术来增强图结构。</p>
-<p>大多数现有的GSL方法都专注于融合从图中提取的不同结构特征（基本视图），但很少包含图语义，例如<strong>层次社区</strong>。因此，在处理包含来自现实世界复杂系统的噪声的图时，它们可能还不够。</p>
+  <h3 id="bug发现"><a href="#bug发现" class="headerlink" title="bug发现"></a>bug发现</h3><p>7月17日，当再次提交一个新的博客内容后，发现<strong>提交到github上的网页无法正常显示（但在本地localhost上是正常的）</strong>，直观上有以下几个问题：</p>
+<ul>
+<li>按钮点击无效，如一键回顶部、白天黑夜模式调整</li>
+<li>数学公式无法正常显示</li>
+</ul>
 <span id="more"></span>
 
-<p>本文结合了<strong>信息瓶颈、最大化互信息</strong>等理论，通过<strong>图增强、编码树、图混合</strong>等技术完成了图结构学习，并形成节点的embedding。</p>
+<p><img src="/../pic/image-20240726120459410.png"></p>
 <hr>
-<h3 id="小梳理"><a href="#小梳理" class="headerlink" title="小梳理"></a>小梳理</h3><p>本篇论文通读下来感觉信息量还是蛮大的，所以在介绍之前我先简单做一个梳理。</p>
-<p>本篇论文我理解为是在 $CoGSL$ 后续所做的工作，其最大的贡献是<strong>将图视角与编码树视角相结合</strong>，不仅最大化图之间、编码与标签之间的互信息，同时还要优化图与编码树之间的互信息，因此本文有很多的篇章来描述编码树如何构造以及损失函数如何定义。</p>
-<p>整个流程下图描述的很清晰，再读文章的时候与这张图对照能够更好的了解具体流程。</p>
-<p><img src="/../pic/image-20240718150406931.png"></p>
-<p>简单来说，首先对两个得到的图基础视图进行增强，并根据这两张图生成融合后的图。分别对每张图构造编码树，并根据图上的编码得到编码树上每个节点的编码。接下来优化图与图之间、树与树之间、图与数之间、编码与标签之间的互信息即可。</p>
-<p>本篇论文我个人感觉就是在不同视角下不断切换，提供更多的互信息优化依据，以得到更好的模型效果。</p>
+<h3 id="bug排查"><a href="#bug排查" class="headerlink" title="bug排查"></a>bug排查</h3><h4 id="怀疑文件问题"><a href="#怀疑文件问题" class="headerlink" title="怀疑文件问题"></a>怀疑文件问题</h4><p>因为这个文件是我post一个新文章后才发现的，所以自然而然怀疑这篇文章有问题。删除掉文章后发现问题依旧存在，因此初步排除了文章本身的问题。</p>
+<h4 id="怀疑代码问题"><a href="#怀疑代码问题" class="headerlink" title="怀疑代码问题"></a>怀疑代码问题</h4><p>F12进入开发者模式，发现很多报错：</p>
+<p><img src="/../pic/image-20240726120340078.png"></p>
+<p>经过分析，其中最主要的也是最直接导致错误的应该是如下错误：</p>
+<p><img src="/../pic/image-20240726120617980.png"></p>
+<p>简单来说本网页使用的是<code>https</code>，但在加载过程中出现了<code>http</code>请求，<strong>请求混用从而<code>http</code>请求被block</strong>，这也就导致一些<code>js</code>组件无法被加载，反映到网页中就是无法正常执行功能。</p>
+<p>接下来的任务就是如何解决<code>http</code>请求。</p>
 <hr>
-<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><h4 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h4><p><strong>图的一维结构熵：</strong><br>$$<br>H^1(G)&#x3D;-\sum_{v\in V}\frac{d_v}{vol(G)}\log_2\frac{d_v}{vol(G)}<br>$$<br>其中 $d_v$ 代表 $v$ 节点所连边的权重和，$vol(G)&#x3D;\sum_v d_v$</p>
-<p><strong>编码树的 $K$ 维结构熵：</strong><br>$$<br>H^{K}(G)&#x3D;\min_{\mathcal{T}}\sum_{\alpha\in\mathcal{T},\alpha\neq\lambda}H^{\mathcal{T}}(G;\alpha),\quad\quad H^{\mathcal{T}}(G;\alpha)&#x3D;-\frac{g_\alpha}{vol(G)}\log_{2}\frac{\mathcal V_\alpha}{\mathcal V_{\alpha^-}}<br>$$<br>$\alpha$ 为树上结点，$\lambda$ 为根节点，其中包含图上的所有node。$g_\alpha$ 是从点 $\alpha$ 连向外部的边权之和，$\mathcal V_a$ 是$\alpha$ 内图节点所连边权的和 $\mathcal V_\alpha&#x3D;\sum_{v\in T_\alpha} d_v$，$\alpha^-$是 $\alpha$ 节点的父节点。</p>
-<h4 id="理论优化思想"><a href="#理论优化思想" class="headerlink" title="理论优化思想"></a>理论优化思想</h4><p>图结构学习能够用以下公式刻画：<br>$$<br>\mathcal L_{gsl}&#x3D;\mathcal L_{cls}(Z^\star,Y_L)+\mu\mathcal L_{reg}(A^\star,Z^\star,A)<br>$$<br>前者是编码与标签的关系，后者是重建的图结构与原始图结构、标签之间的约束。</p>
-<p>在本文总，采用<strong>信息瓶颈理论</strong>进行建模：<br>$$<br>GIB(G,Y;Z^\star)&#x3D;\max_{\boldsymbol{Z}}\left[I(\boldsymbol{Z};Y)-\beta I(\boldsymbol{Z};G)\right]<br>$$<br>旨在最大化编码与标签的关系，同时希望从图 $G$ 中提取较少的信息即可。但是 $I(Z,G)$ 的计算是困难的，因此转化问题（<strong>感觉可以借鉴</strong>）：<br>$$<br>\min_{G_{s}}\max_{\boldsymbol{Z}}I(\boldsymbol{Z};Y_{L})+\beta I(\boldsymbol{Z};G_{s}) \ s.t.,H^{1}(G)&gt;H^{1}(G_{s}),I(G;Y_{L})&#x3D;I(G_{s};Y_{L})<br>$$<br>其中 $G_s$ 为 $G$ 的采样子图。也就是说提取较少有用信息这个限制通过 $G_s$ 来进行限制，换句话来说，其保证了<strong>捕获节点分类的最小和充分信息</strong>。</p>
-<p>但是方法中具体而言并不是直接优化这个式子，而是采用不同损失来实现这个思想。</p>
-<h4 id="理论方法"><a href="#理论方法" class="headerlink" title="理论方法"></a>理论方法</h4><p><img src="/../pic/image-20240718150406931.png"></p>
-<p>首先根据 $CoGSL$ 方法，生成两个基础视图的图结构 $G^1,G^2$。</p>
-<h5 id="图增强"><a href="#图增强" class="headerlink" title="图增强"></a>图增强</h5><p>接下来对图进行增强，使用 GCN 网络得到每个节点的编码 $z_i$，根据<strong>余弦相似度</strong>计算出节点对之间的相似度。进一步，根据这些相似度，构造 $kNN$ graph，而 $k$ 的选择需要满足图结构熵的最小：<br>$$<br>H^1(G^1_{k-1}) \geq H^1(G^1_{k}) \leq H^1(G^1_{k+1})<br>$$<br>最终增强后的图为 $G_{en}^1&#x3D;G^1+\xi G_k^{1}$，$G^2_{en}$ 同理。</p>
-<h5 id="编码树的构建"><a href="#编码树的构建" class="headerlink" title="编码树的构建"></a>编码树的构建</h5><p>构建目标依旧用到了熵思想：<br>$$<br>\mathcal{T}^{\star}&#x3D;\underset{\forall\mathcal{T}:height(\mathcal{T})\leq K}{\arg\min}(H^{\mathcal{T}}(G))<br>$$<br>为了构建一个树，有三种操作：</p>
-<ul>
-<li><p>合并：对于两个community $P_i,P_j$，合并操作 $op_m(P_i,P_j)$ 后剩下的community集合为 $\mathcal{P}&#x3D;\{P_{1},…,P_{i-1},P_{i+1},…,P_{j-1},P_{j+1},…,P_{c},P_{x}\}$</p>
-<p>另外文中给出了合并后的结构熵变化，我理解与<strong>决策树中的信息增益类似</strong>。选择信息增益最大的一对进行合并。</p>
-</li>
-<li><p>压缩：$op_c(\mathcal P)$ 即将 $\mathcal P$ 内的所有community分别压缩成一个点，边权为之前若干边权的和。</p>
-</li>
-<li><p>更新：$op_u(\mathcal T,\mathcal P)$ ，将 $\mathcal P$ 内部所有的community作为 $\mathcal T$ 的叶子结点。</p>
-</li>
-</ul>
-<p>算法过程为：</p>
-<p><img src="/../pic/image-20240718154119776.png"></p>
-<p>感觉跟决策树、霍夫曼编码思想相似。</p>
-<h5 id="最终合并图结构的构建"><a href="#最终合并图结构的构建" class="headerlink" title="最终合并图结构的构建"></a>最终合并图结构的构建</h5><p>合并的适合考虑了community之间的关系，也就是说考虑了<strong>编码树</strong>。定义叶子结点的社区影响：<br>$$<br>\varepsilon_{\alpha}&#x3D;\frac{H^{\mathcal T}(G;\alpha)}{\sum_{\delta\in\mathcal T}H^{\mathcal T}(G;\delta)}<br>$$<br>其中 $\delta$ 是从树根 $\lambda$ 到 $\alpha$ 路径上的点。</p>
-<p>接下来获得系数 $a$，以 $G^1$ 为例：<br>$$<br>a_i^1&#x3D;\frac{\sigma(\pi_i^1)\cdot\pi_i^1+\sigma(\varepsilon_i^1)\cdot\varepsilon_i^1}{\sigma(\pi_i^1)+\sigma(\varepsilon_i^1)}<br>$$<br>其中 $\sigma(·)$ 是激活函数，$\pi_i^1$ 是 $v_i$ 对 $G^1$ 的预测置信度（方法与$CoGSL$）一致。</p>
-<p>进一步获得权重：<br>$$<br>w_i^1&#x3D;a_i^1&#x2F;(a_i^1+a_i^2),\quad w_i^2&#x3D;a_i^2&#x2F;(a_i^1+a_i^2)<br>$$<br>然后便能得到融合后的图了：<br>$$<br>G_i^\star&#x3D;w_i^1\cdot G_{en,i}^1+w_i^2\cdot G_{en,i}^2<br>$$</p>
-<h4 id="双目标优化损失"><a href="#双目标优化损失" class="headerlink" title="双目标优化损失"></a>双目标优化损失</h4><p><strong>第一个</strong>损失当然是预测准确率的交叉熵：<br>$$<br>\mathcal L_{cls}&#x3D;\sum_{i&#x3D;1}^2\mathcal L_{cross}(\Pi^i,Y_L)+\mathcal L_{cross}(\Pi^\star,Y_L)<br>$$<br><strong>第二个</strong>就略有复杂了。</p>
-<p>我们先定义编码树上除去叶节点的编码方式（因为叶节点每个节点代表图上一个点，他的编码就是GCN得到的）：<br>$$<br>h_\alpha&#x3D;\sum_{i&#x3D;1}^m\left[\frac{h^{\mathcal{T}}(G;\alpha^{\langle i\rangle})}{\sum_{j&#x3D;1}^mh^{\mathcal{T}}(G;\alpha^{\langle j\rangle})}h_{\alpha\langle i\rangle}\right]<br>$$<br>其中 $m$ 代表的是 $\alpha$ 的子节点。</p>
-<p>这样我们就能够刻画节点与树之间的信息关系了：<br>$$<br>\mathcal L_{hc}(\boldsymbol Z;\mathcal{T})&#x3D;-\sum_{l&#x3D;2}^K\theta_l\log_2\sum_{i&#x3D;1}^n\frac{sim(\boldsymbol z_i,\boldsymbol h_{(i,l)})}{\sum_{j&#x3D;1,j\neq i}^nsim(\boldsymbol z_j,\boldsymbol h_{(j,l)})},\quad \theta_l&#x3D;\gamma(1-\gamma)^l<br>$$<br>$h_{(i,l)}$ 是节点 $v_i$ 的第 $l$ 层community在 $\mathcal T$ 中的嵌入。这样每一组图和编码树之间的损失定义为：<br>$$<br>\mathcal L_{mmp}^1&#x3D;\mathcal L_{cross}^1(\Pi^1,Y_L)+\mathcal L_{hc}(Z^1;\mathcal{T}^1)<br>$$<br>因为共有三组（$G^1,G^2,G^\star$），因此 $\mathcal L_{mmp}&#x3D;\mathcal L_{mmp}^{1}+\mathcal L_{mmp}^{2}+\mathcal L_{mmp}^{\star}$</p>
-<p>除此之外，还要最大化不同组之间的互信息：<br>$$<br>\mathcal L_{miet}(\mathcal{T}^1,\mathcal{T}^2)&#x3D;\frac{1}{2}\left[\mathcal L_{hc}(Z^1;\mathcal{T}^2)+\mathcal L_{hc}(Z^2;\mathcal{T}^1)\right]<br>$$<br>最终才能得到第二个损失优化目标（太复杂了）：<br>$$<br>\mathcal L_{ve}&#x3D;\mathcal L_{mmp}+(\mathcal L_{miet}(\mathcal T^{1},\mathcal T^{2})+\mathcal L_{miet}(\mathcal T^{1},\mathcal T^{\star}) +\mathcal L_{miet}(\mathcal T^{2},\mathcal T^{\star}))<br>$$</p>
+<h3 id="bug解决"><a href="#bug解决" class="headerlink" title="bug解决"></a>bug解决</h3><h4 id="网上资料"><a href="#网上资料" class="headerlink" title="网上资料"></a>网上资料</h4><p>搜索了一些资料，解决措施也大差不差，最直接的方式是增加一行代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Content-Security-Policy&quot;</span> <span class="attr">content</span>=<span class="string">&quot;upgrade-insecure-requests&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但因为本博客的<code>Html</code>生成是靠着<code>hexo</code>将<code>md</code>文件转写得到的，我不知道如何直接修改其编辑逻辑，于是暂时搁置了这个方案，转而去代码中寻找到底哪里出现了<code>http</code>请求。</p>
+<h4 id="代码修改——解决"><a href="#代码修改——解决" class="headerlink" title="代码修改——解决"></a>代码修改——解决</h4><p>浏览生成的网页代码，很容易发现里面并没有<code>http://xxxx</code>，相反，全部都是<code>https://xxxx</code>，这就很奇怪了。</p>
+<p>进一步看报错位置所涉及的文件，将报错的文件名反向去<code>Html</code>中寻找，如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--报错中无法请求pace.min.js文件--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.staticfile.net/pace/1.2.4/pace.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>大概搜了几个，发现报错的资源地址都是<code>&quot;https://cdn.staticfile.net/xxx</code>形式。</p>
+<p>直接去搜索这个网址会直接<strong>跳转到</strong><code>https://cdn.staticfile.net/xxx</code>，本质上他们应该指向一个地方。这个地方<strong>恰好也是我在控制台中搜索其对应<code>http://</code>报错所得到的内容</strong>，这便启示我可能是<code>&quot;https://cdn.staticfile.net/xxx</code>的形式不正确，将<code>org</code>改为<code>net</code>即可。</p>
+<p>尝试后问题解决，一切恢复正常：</p>
+<p><img src="/../pic/image-20240726122515504.png"></p>
+<p><img src="/../pic/image-20240726122329111.png"></p>
+<p>最终写一个<code>python</code>脚本，遍历编译生成的所有网页源代码，将其中对应的内容进行修改即可：：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line">current_directory = <span class="string">&#x27;.&#x27;</span></span><br><span class="line">html_file_pattern = re.<span class="built_in">compile</span>(<span class="string">r&#x27;.*\.html$&#x27;</span>, re.IGNORECASE)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">replace_org_with_net</span>(<span class="params">content</span>):</span><br><span class="line">    <span class="keyword">return</span> re.sub(<span class="string">r&#x27;cdn.staticfile.net&#x27;</span>, <span class="string">&#x27;cdn.staticfile.net&#x27;</span>, content)</span><br><span class="line"><span class="keyword">for</span> root, dirs, files <span class="keyword">in</span> os.walk(current_directory):</span><br><span class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">        <span class="keyword">if</span> html_file_pattern.<span class="keyword">match</span>(file):</span><br><span class="line">            file_path = os.path.join(root, file)</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;r&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                content = f.read()</span><br><span class="line">            new_content = replace_org_with_net(content)</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                f.write(new_content)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&#x27;Updated file: <span class="subst">&#123;file_path&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Finished processing all HTML files.&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
 <hr>
-<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><h4 id="不同模型的横向对比"><a href="#不同模型的横向对比" class="headerlink" title="不同模型的横向对比"></a>不同模型的横向对比</h4><p><img src="/../pic/image-20240718161728649.png"></p>
-<h4 id="当图被攻击后"><a href="#当图被攻击后" class="headerlink" title="当图被攻击后"></a>当图被攻击后</h4><p>‘Ours_v1’、’Ours_v2’ 和 ‘Ours_both’的曲线是我们方法的第一、第二和所有基本视图的结果，都被攻击。</p>
-<p><img src="/../pic/image-20240718162224568.png"></p>
-<h4 id="编码树的有效性"><a href="#编码树的有效性" class="headerlink" title="编码树的有效性"></a>编码树的有效性</h4><p>与其他两种社区结构提取方法kNN和Louvain进行比较。同时探究编码树深度的影响。</p>
-<p><img src="/../pic/image-20240718162337376.png"></p>
-<h4 id="两个视图的混合方法的有效性"><a href="#两个视图的混合方法的有效性" class="headerlink" title="两个视图的混合方法的有效性"></a>两个视图的混合方法的有效性</h4><p>与其他三种机制进行比较：average, attention and prediction confidence</p>
-<p><img src="/../pic/image-20240718162442705.png"></p>
+<h3 id="bug猜想"><a href="#bug猜想" class="headerlink" title="bug猜想"></a>bug猜想</h3><p>可能是网站协议发生了更新，导致之前可行的方案如今变得不可行。</p>
+<p>当然这个问题可能也反映出我安装的库有一些老旧了，但是毕竟好久没有接触到这个环境，我也不太敢去乱动什么，因此才采用了这种较为“麻烦”的方案来进行解决</p>
  
       <!-- reward -->
       
@@ -231,12 +216,12 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/07/18/Structural%20Entropy%20based%20GSL/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/07/25/http_bug/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/" rel="tag">信息论</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">图神经网络</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/test-tag/" rel="tag">test_tag</a></li></ul>
 
     </footer>
   </div>
@@ -244,19 +229,19 @@
    
   <nav class="article-nav">
     
-      <a href="/2024/07/25/GIB/" class="article-nav-link">
+      <a href="/2024/07/26/DGIB/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            《Graph Information Bottleneck》论文解读
+            《Dynamic Graph Information Bottleneck》论文解读
           
         </div>
       </a>
     
     
-      <a href="/2024/07/17/MinGE/" class="article-nav-link">
+      <a href="/2024/07/25/GIB/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">《Graph Entropy Guided Node Embedding Dimension Selection for Graph Neural Networks》论文解读</div>
+        <div class="article-nav-title">《Graph Information Bottleneck》论文解读</div>
       </a>
     
   </nav>
