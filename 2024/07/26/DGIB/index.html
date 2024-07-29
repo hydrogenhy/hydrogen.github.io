@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">307</span>
+            <span class="post-count">674</span>
         </span>
     </span>
 
@@ -101,7 +101,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">1 分钟</span>
+            <span class="post-count">2 分钟</span>
         </span>
     </span>
 </div>
@@ -125,6 +125,24 @@
 <p>整体论文架构思路与<a target="_blank" rel="noopener" href="https://hydrogenhy.github.io/2024/07/24/GIB/">《Graph Information Bottleneck》论文解读</a>有些相似，但应用于不同场景。本文讲重点介绍思想与区别，一些之前提到过得内容会简单略过。</p>
 <hr>
 <h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240725213950724.png"></p>
+<h4 id="DGIB-MS"><a href="#DGIB-MS" class="headerlink" title="$DGIB_{MS}$"></a>$DGIB_{MS}$</h4><p>与GIB类似，仍然有如下假设：当前节点时空特征只与$k$-hop邻居有关，与其它结点相互独立。</p>
+<p>针对最小-充足性特征，编码应该满足：<br>$$<br>\mathrm Z^{T+1} &#x3D;\arg\min_{\mathbb P(Z^{T+1}|\mathcal D ,\theta)\in\Omega}\mathrm{DGIB}_{MS}(\mathcal D,\mathrm Y^{I+1};\mathrm Z^{I+1})<br>\triangleq\left[- I(\mathrm Y^{T+1};\mathrm Z^{T+1}) +\beta_1 I(\mathrm D;\mathrm Z^{T+1}) \right].<br>$$<br>这里是与原始数据 $\mathcal D $ 相比，保留了原始BI理念的特点。</p>
+<p><strong>变分界：</strong></p>
+<p><img src="/../pic/image-20240730004303791.png"></p>
+<h4 id="DGIB-C"><a href="#DGIB-C" class="headerlink" title="$DGIB_{C}$"></a>$DGIB_{C}$</h4><p>针对一致性特征，编码应该满足：<br>$$<br>\mathrm Z^{T+1} &#x3D;\arg\min_{\mathbb P(Z^{T+1}|Z^{1:T},C(\theta))\in\Omega}\mathrm{DGIB}_{MS}(Z^{1:T},\mathrm Y^{I+1};\mathrm Z^{I+1})<br>\triangleq\left[- I(\mathrm Y^{T+1};\mathrm Z^{T+1}) +\beta_1 I(Z^{1:T};\mathrm Z^{T+1}) \right].<br>$$<br>这里是与时间尺度上的特征$Z^{1:T}$ 相比，保持了编码空间的一致性。</p>
+<p><strong>变分界：</strong></p>
+<p><img src="/../pic/image-20240730004334597.png"></p>
+<p><img src="/../pic/image-20240730004419028.png"></p>
+<h4 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h4><p>交叉熵代替互信息：</p>
+<p><img src="/../pic/image-20240730004604781.png"></p>
+<p>假设 $\mathbb P(\hat{\mathrm A}^t\mid\hat{\mathrm Z}^t,\mathrm Z^{t-1},\mathrm A^t)$服从伯努利or类别分布，进而得到 $A$：</p>
+<p><img src="/../pic/image-20240730004918569.png"></p>
+<p>假设 $\mathbb P(\mathrm Z^t\mid\hat{\mathrm Z}^t,\mathrm Z^{t-1},\hat{\mathrm A^t})$服从多元正态分布，进而得到 $Z$，其中 $\Phi$是正态分布：</p>
+<p><img src="/../pic/image-20240730005208383.png"></p>
+<p>对于Eq(14)而言：</p>
+<p><img src="/../pic/image-20240730005353997.png"></p>
+<h4 id="优化目标"><a href="#优化目标" class="headerlink" title="优化目标"></a>优化目标</h4><p>优化目标为：<br>$$<br>\mathcal L_{\mathrm{DGIB}}&#x3D;\alpha\mathrm{DGIB}_{MS}+(1-\alpha)\mathrm{DGIB}_C<br>$$<br>而两种信息瓶颈的区别就在于已知量是谁：</p>
+<p><img src="/../pic/image-20240730005615993.png"></p>
 <hr>
 <h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><ul>
 <li><p>在原始数据集上训练，然后对测试集进行特征或结构的攻击：</p>
