@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>《Structural Entropy Based Graph Structure Learning for Node Classification》论文解读 |  Hy&#39;s Treasure house</title>
+      <title>《Learning Graph Representation via Graph Entropy Maximization》论文解读 |  Hy&#39;s Treasure house</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -61,7 +61,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-Structural Entropy based GSL"
+  id="post-GeMax"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -72,7 +72,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  《Structural Entropy Based Graph Structure Learning for Node Classification》论文解读
+  《Learning Graph Representation via Graph Entropy Maximization》论文解读
 </h1>
  
 
@@ -80,8 +80,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2024/07/18/Structural%20Entropy%20based%20GSL/" class="article-date">
-  <time datetime="2024-07-18T05:28:20.000Z" itemprop="datePublished">2024-07-18</time>
+      <a href="/2024/08/01/GeMax/" class="article-date">
+  <time datetime="2024-08-01T01:30:20.000Z" itemprop="datePublished">2024-08-01</time>
 </a> 
   <div class="article-category">
     <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
@@ -92,7 +92,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2.1k</span>
+            <span class="post-count">1.9k</span>
         </span>
     </span>
 
@@ -116,63 +116,80 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>论文传送门：<a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/28679">click here</a></p>
-<p>可参考资料：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2201.05540">$CoGSL$</a></p>
-<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本篇论文是2024AAAI上的论文。</p>
-<p>由于GNN的性能高度依赖于输入图结构的质量，因此如今学者已经提出了各种**图结构学习(GSL)**技术来增强图结构。</p>
-<p>大多数现有的GSL方法都专注于融合从图中提取的不同结构特征（基本视图），但很少包含图语义，例如<strong>层次社区</strong>。因此，在处理包含来自现实世界复杂系统的噪声的图时，它们可能还不够。</p>
-<span id="more"></span>
-
-<p>本文结合了<strong>信息瓶颈、最大化互信息</strong>等理论，通过<strong>图增强、编码树、图混合</strong>等技术完成了图结构学习，并形成节点的embedding。</p>
-<hr>
-<h3 id="小梳理"><a href="#小梳理" class="headerlink" title="小梳理"></a>小梳理</h3><p>本篇论文通读下来感觉信息量还是蛮大的，所以在介绍之前我先简单做一个梳理。</p>
-<p>本篇论文我理解为是在 $CoGSL$ 后续所做的工作，其最大的贡献是<strong>将图视角与编码树视角相结合</strong>，不仅最大化图之间、编码与标签之间的互信息，同时还要优化图与编码树之间的互信息，因此本文有很多的篇章来描述编码树如何构造以及损失函数如何定义。</p>
-<p>整个流程下图描述的很清晰，再读文章的时候与这张图对照能够更好的了解具体流程。</p>
-<p><img src="/../pic/image-20240718150406931.png"></p>
-<p>简单来说，首先对两个得到的图基础视图进行增强，并根据这两张图生成融合后的图。分别对每张图构造编码树，并根据图上的编码得到编码树上每个节点的编码。接下来优化图与图之间、树与树之间、图与数之间、编码与标签之间的互信息即可。</p>
-<p>本篇论文我个人感觉就是在不同视角下不断切换，提供更多的互信息优化依据，以得到更好的模型效果。</p>
-<hr>
-<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><h4 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h4><p><strong>图的一维结构熵：</strong><br>$$<br>H^1(G)&#x3D;-\sum_{v\in V}\frac{d_v}{vol(G)}\log_2\frac{d_v}{vol(G)}<br>$$<br>其中 $d_v$ 代表 $v$ 节点所连边的权重和，$vol(G)&#x3D;\sum_v d_v$</p>
-<p><strong>编码树的 $K$ 维结构熵：</strong><br>$$<br>H^{K}(G)&#x3D;\min_{\mathcal{T}}\sum_{\alpha\in\mathcal{T},\alpha\neq\lambda}H^{\mathcal{T}}(G;\alpha),\quad\quad H^{\mathcal{T}}(G;\alpha)&#x3D;-\frac{g_\alpha}{vol(G)}\log_{2}\frac{\mathcal V_\alpha}{\mathcal V_{\alpha^-}}<br>$$<br>$\alpha$ 为树上结点，$\lambda$ 为根节点，其中包含图上的所有node。$g_\alpha$ 是从点 $\alpha$ 连向外部的边权之和，$\mathcal V_a$ 是$\alpha$ 内图节点所连边权的和 $\mathcal V_\alpha&#x3D;\sum_{v\in T_\alpha} d_v$，$\alpha^-$是 $\alpha$ 节点的父节点。</p>
-<h4 id="理论优化思想"><a href="#理论优化思想" class="headerlink" title="理论优化思想"></a>理论优化思想</h4><p>图结构学习能够用以下公式刻画：<br>$$<br>\mathcal L_{gsl}&#x3D;\mathcal L_{cls}(Z^\star,Y_L)+\mu\mathcal L_{reg}(A^\star,Z^\star,A)<br>$$<br>前者是编码与标签的关系，后者是重建的图结构与原始图结构、标签之间的约束。</p>
-<p>在本文总，采用<strong>信息瓶颈理论</strong>进行建模：<br>$$<br>GIB(G,Y;Z^\star)&#x3D;\max_{\boldsymbol{Z}}\left[I(\boldsymbol{Z};Y)-\beta I(\boldsymbol{Z};G)\right]<br>$$<br>旨在最大化编码与标签的关系，同时希望从图 $G$ 中提取较少的信息即可。但是 $I(Z,G)$ 的计算是困难的，因此转化问题（<strong>感觉可以借鉴</strong>）：<br>$$<br>\min_{G_{s}}\max_{\boldsymbol{Z}}I(\boldsymbol{Z};Y_{L})+\beta I(\boldsymbol{Z};G_{s}) \ s.t.,H^{1}(G)&gt;H^{1}(G_{s}),I(G;Y_{L})&#x3D;I(G_{s};Y_{L})<br>$$<br>其中 $G_s$ 为 $G$ 的采样子图。也就是说提取较少有用信息这个限制通过 $G_s$ 来进行限制，换句话来说，其保证了<strong>捕获节点分类的最小和充分信息</strong>。</p>
-<p>但是方法中具体而言并不是直接优化这个式子，而是采用不同损失来实现这个思想。</p>
-<h4 id="理论方法"><a href="#理论方法" class="headerlink" title="理论方法"></a>理论方法</h4><p><img src="/../pic/image-20240718150406931.png"></p>
-<p>首先根据 $CoGSL$ 方法，生成两个基础视图的图结构 $G^1,G^2$。</p>
-<h5 id="图增强"><a href="#图增强" class="headerlink" title="图增强"></a>图增强</h5><p>接下来对图进行增强，使用 GCN 网络得到每个节点的编码 $z_i$，根据<strong>余弦相似度</strong>计算出节点对之间的相似度。进一步，根据这些相似度，构造 $kNN$ graph，而 $k$ 的选择需要满足图结构熵的最小：<br>$$<br>H^1(G^1_{k-1}) \geq H^1(G^1_{k}) \leq H^1(G^1_{k+1})<br>$$<br>最终增强后的图为 $G_{en}^1&#x3D;G^1+\xi G_k^{1}$，$G^2_{en}$ 同理。</p>
-<h5 id="编码树的构建"><a href="#编码树的构建" class="headerlink" title="编码树的构建"></a>编码树的构建</h5><p>构建目标依旧用到了熵思想：<br>$$<br>\mathcal{T}^{\star}&#x3D;\underset{\forall\mathcal{T}:height(\mathcal{T})\leq K}{\arg\min}(H^{\mathcal{T}}(G))<br>$$<br>为了构建一个树，有三种操作：</p>
+  <p>论文传送门：<a target="_blank" rel="noopener" href="https://proceedings.mlr.press/v235/sun24i.html">click here</a></p>
+<p>code：<a target="_blank" rel="noopener" href="https://github.com/MathAdventurer/GeMax">GeMax(github)</a></p>
+<h3 id="论文任务与个人想法"><a href="#论文任务与个人想法" class="headerlink" title="论文任务与个人想法"></a>论文任务与个人想法</h3><p>本工作来自于2024ICML。</p>
+<p>文章的任务是图表示学习，其不仅对每一张图上的<strong>每个节点得到编码</strong>，更在图整体上得到关于<strong>图的编码</strong>。本文提出了一种利<strong>用正交表示进行图熵最大化</strong>的近似方法。</p>
+<p>整篇文章读下来，有让我眼前一亮的感觉，是让我觉得蛮有意思的一篇文章。</p>
+<p>文章运用了其他文献未运用的，基于<strong>独立集</strong>表示的熵的表示方法。<span id="more"></span>在计算中，用到了“vertex-packing polytope（$VP(G)$）”概念，但是计算复杂，文章论述了为什么<strong>不能</strong>用下界进行训练。为了简化问题，文章取了其子集，并在正交表示的条件下给出了一条定理，从而<strong>转化为一定条件下的优化问题</strong>——规避了复杂的求解独立集的过程。更进一步，将条件转化为优化，使得模型能够学习。</p>
+<p>总的来说，我认为论文的亮点如下：</p>
 <ul>
-<li><p>合并：对于两个community $P_i,P_j$，合并操作 $op_m(P_i,P_j)$ 后剩下的community集合为 $\mathcal{P}&#x3D;\{P_{1},…,P_{i-1},P_{i+1},…,P_{j-1},P_{j+1},…,P_{c},P_{x}\}$</p>
-<p>另外文中给出了合并后的结构熵变化，我理解与<strong>决策树中的信息增益类似</strong>。选择信息增益最大的一对进行合并。</p>
+<li><p>如何理解文中最大化交叉熵的目的。</p>
 </li>
-<li><p>压缩：$op_c(\mathcal P)$ 即将 $\mathcal P$ 内的所有community分别压缩成一个点，边权为之前若干边权的和。</p>
+<li><p>找到了正交表示和$VP$之间的一个很妙的关系。</p>
 </li>
-<li><p>更新：$op_u(\mathcal T,\mathcal P)$ ，将 $\mathcal P$ 内部所有的community作为 $\mathcal T$ 的叶子结点。</p>
+<li><p>规避了求解独立集的过程，使得计算成为可能。</p>
+</li>
+<li><p>将有条件的优化问题转化为无条件的优化问题。</p>
 </li>
 </ul>
-<p>算法过程为：</p>
-<p><img src="/../pic/image-20240718154119776.png"></p>
-<p>感觉跟决策树、霍夫曼编码思想相似。</p>
-<h5 id="最终合并图结构的构建"><a href="#最终合并图结构的构建" class="headerlink" title="最终合并图结构的构建"></a>最终合并图结构的构建</h5><p>合并的适合考虑了community之间的关系，也就是说考虑了<strong>编码树</strong>。定义叶子结点的社区影响：<br>$$<br>\varepsilon_{\alpha}&#x3D;\frac{H^{\mathcal T}(G;\alpha)}{\sum_{\delta\in\mathcal T}H^{\mathcal T}(G;\delta)}<br>$$<br>其中 $\delta$ 是从树根 $\lambda$ 到 $\alpha$ 路径上的点。</p>
-<p>接下来获得系数 $a$，以 $G^1$ 为例：<br>$$<br>a_i^1&#x3D;\frac{\sigma(\pi_i^1)\cdot\pi_i^1+\sigma(\varepsilon_i^1)\cdot\varepsilon_i^1}{\sigma(\pi_i^1)+\sigma(\varepsilon_i^1)}<br>$$<br>其中 $\sigma(·)$ 是激活函数，$\pi_i^1$ 是 $v_i$ 对 $G^1$ 的预测置信度（方法与$CoGSL$）一致。</p>
-<p>进一步获得权重：<br>$$<br>w_i^1&#x3D;a_i^1&#x2F;(a_i^1+a_i^2),\quad w_i^2&#x3D;a_i^2&#x2F;(a_i^1+a_i^2)<br>$$<br>然后便能得到融合后的图了：<br>$$<br>G_i^\star&#x3D;w_i^1\cdot G_{en,i}^1+w_i^2\cdot G_{en,i}^2<br>$$</p>
-<h4 id="双目标优化损失"><a href="#双目标优化损失" class="headerlink" title="双目标优化损失"></a>双目标优化损失</h4><p><strong>第一个</strong>损失当然是预测准确率的交叉熵：<br>$$<br>\mathcal L_{cls}&#x3D;\sum_{i&#x3D;1}^2\mathcal L_{cross}(\Pi^i,Y_L)+\mathcal L_{cross}(\Pi^\star,Y_L)<br>$$<br><strong>第二个</strong>就略有复杂了。</p>
-<p>我们先定义编码树上除去叶节点的编码方式（因为叶节点每个节点代表图上一个点，他的编码就是GCN得到的）：<br>$$<br>h_\alpha&#x3D;\sum_{i&#x3D;1}^m\left[\frac{h^{\mathcal{T}}(G;\alpha^{\langle i\rangle})}{\sum_{j&#x3D;1}^mh^{\mathcal{T}}(G;\alpha^{\langle j\rangle})}h_{\alpha\langle i\rangle}\right]<br>$$<br>其中 $m$ 代表的是 $\alpha$ 的子节点。</p>
-<p>这样我们就能够刻画节点与树之间的信息关系了：<br>$$<br>\mathcal L_{hc}(\boldsymbol Z;\mathcal{T})&#x3D;-\sum_{l&#x3D;2}^K\theta_l\log_2\sum_{i&#x3D;1}^n\frac{sim(\boldsymbol z_i,\boldsymbol h_{(i,l)})}{\sum_{j&#x3D;1,j\neq i}^nsim(\boldsymbol z_j,\boldsymbol h_{(j,l)})},\quad \theta_l&#x3D;\gamma(1-\gamma)^l<br>$$<br>$h_{(i,l)}$ 是节点 $v_i$ 的第 $l$ 层community在 $\mathcal T$ 中的嵌入。这样每一组图和编码树之间的损失定义为：<br>$$<br>\mathcal L_{mmp}^1&#x3D;\mathcal L_{cross}^1(\Pi^1,Y_L)+\mathcal L_{hc}(Z^1;\mathcal{T}^1)<br>$$<br>因为共有三组（$G^1,G^2,G^\star$），因此 $\mathcal L_{mmp}&#x3D;\mathcal L_{mmp}^{1}+\mathcal L_{mmp}^{2}+\mathcal L_{mmp}^{\star}$</p>
-<p>除此之外，还要最大化不同组之间的互信息：<br>$$<br>\mathcal L_{miet}(\mathcal{T}^1,\mathcal{T}^2)&#x3D;\frac{1}{2}\left[\mathcal L_{hc}(Z^1;\mathcal{T}^2)+\mathcal L_{hc}(Z^2;\mathcal{T}^1)\right]<br>$$<br>最终才能得到第二个损失优化目标（太复杂了）：<br>$$<br>\mathcal L_{ve}&#x3D;\mathcal L_{mmp}+(\mathcal L_{miet}(\mathcal T^{1},\mathcal T^{2})+\mathcal L_{miet}(\mathcal T^{1},\mathcal T^{\star}) +\mathcal L_{miet}(\mathcal T^{2},\mathcal T^{\star}))<br>$$</p>
+<p>光看这一部分大概率是不了解其具体干了什么，那么先往下看，了解完整体内容再回头看，便能够感受到巧妙之处了。</p>
 <hr>
-<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><h4 id="不同模型的横向对比"><a href="#不同模型的横向对比" class="headerlink" title="不同模型的横向对比"></a>不同模型的横向对比</h4><p><img src="/../pic/image-20240718161728649.png"></p>
-<h4 id="当图被攻击后"><a href="#当图被攻击后" class="headerlink" title="当图被攻击后"></a>当图被攻击后</h4><p>‘Ours_v1’、’Ours_v2’ 和 ‘Ours_both’的曲线是我们方法的第一、第二和所有基本视图的结果，都被攻击。</p>
-<p><img src="/../pic/image-20240718162224568.png"></p>
-<h4 id="编码树的有效性"><a href="#编码树的有效性" class="headerlink" title="编码树的有效性"></a>编码树的有效性</h4><p>与其他两种社区结构提取方法kNN和Louvain进行比较。同时探究编码树深度的影响。</p>
-<p><img src="/../pic/image-20240718162337376.png"></p>
-<h4 id="两个视图的混合方法的有效性"><a href="#两个视图的混合方法的有效性" class="headerlink" title="两个视图的混合方法的有效性"></a>两个视图的混合方法的有效性</h4><p>与其他三种机制进行比较：average, attention and prediction confidence</p>
-<p><img src="/../pic/image-20240718162442705.png"></p>
-<hr>
-<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>后期阅读其他论文发现这篇论文其实是如下论文的一个<strong>改编与延伸</strong>，因为内容很相似，因此不另外书写一篇内容：</p>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240801234721505.png"></p>
+<h4 id="图熵，但不能简单优化下界"><a href="#图熵，但不能简单优化下界" class="headerlink" title="图熵，但不能简单优化下界"></a>图熵，但不能简单优化下界</h4><p>这里的图熵是基于独立集定义的，独立集就是集合中任意两个点事没有边相连的。下面这个例子能够较好的展示，其一共有十个独立集：</p>
+<p><img src="/../pic/image-20240802000029372.png"></p>
+<p>比如 $b_6$ 就代表 $v_1,v_3$ 所组成的独立集（很好理解吧）。</p>
+<p>先引入一个概念：<strong>vertex-packing polytope</strong><br>$$<br>\mathrm{VP}(G):&#x3D;\{\boldsymbol a\in\mathbb R^{|V|}:\boldsymbol a&#x3D;\boldsymbol B\boldsymbol{\lambda}, \boldsymbol{\lambda}\geq0, \sum_i\lambda_i&#x3D;1\}<br>$$<br>得到的 $a_i$ 可以理解为其对整个图的独立集所做的贡献。</p>
+<p>那么现在就可以引出本文的<strong>图熵</strong>了：<br>$$<br>H_k(G,P):&#x3D;\min_{\boldsymbol a\in\text{VP}(G)}\sum_{i&#x3D;1}^{|G|}-P_i\log(a_i)<br>$$<br>其中 $P_i$ 代表第 $i$ 个节点的额概率密度。$\sum P_i&#x3D;1$，但是<strong>注意</strong> $\sum a_i\neq1$ 。我们希望最大化图熵 $\max\limits_{F\in\mathcal F} \mathbb E_{G\sim\mathcal D}\begin{bmatrix}H_k\left(G,P_{F(G)}\right)\end{bmatrix}$。</p>
+<p>设图表示函数为 $F_g$，图节点函数为 $F_z$：<br>$$<br>\mathbf g^\theta&#x3D;F_g(\boldsymbol A,\boldsymbol X;\theta)\quad \boldsymbol Z^\phi&#x3D;F_Z(\boldsymbol A,\boldsymbol X;\phi).<br>$$<br>那么定义Boltzmann distribution:<br>$$<br>P_i(\mathbf g^\theta,\boldsymbol Z^\phi):&#x3D;\frac{\exp(-||\boldsymbol z_i^\phi-\mathbf g^\theta||^2)}{\sum_{l\in V}\exp(-||\boldsymbol z_l^\phi-\mathbf g^\theta||^2)}, \forall i\in V<br>$$<br>从而最终的优化目标为：<br>$$<br>\max_{\theta,\phi} \sum_{j&#x3D;1}^NH_k\left(G_j,P(\boldsymbol A_j,\boldsymbol X_j;\theta,\phi)\right)<br>$$<br>或者可以理解为：<br>$$<br>\max_{\theta,\phi}\sum_{j&#x3D;1}^N\min_{\boldsymbol a\in\mathrm{VP}(G_j)}\sum_{i&#x3D;1}^{n_j}-P_i(\boldsymbol A_j,\boldsymbol X_j;\theta,\phi)\log(a_i)<br>$$<br>这个熵是有<strong>下界</strong>的：<br>$$<br>H(P)-\log\alpha(G)\leq H_k(G,P)<br>$$<br>其中 $H$ 就是independent number，而 $\alpha(G)$ 是<a target="_blank" rel="noopener" href="https://mathworld.wolfram.com/IndependenceNumber.html">独立数</a>。</p>
+<p>根据这个界去优化的话<strong>不直接捕获图结构的任何拓扑信息</strong>，且效果不好，因此我们需要一种其他方法来对 $H_k$ 进行估计。</p>
+<h4 id="pre解决难以优化的问题"><a href="#pre解决难以优化的问题" class="headerlink" title="pre解决难以优化的问题"></a>pre解决难以优化的问题</h4><p>图熵的计算是 <strong>NP-hard</strong> 问题，显然是不可计算的，因此本文提出了一个vertex-packing polytope子集来减少计算量，当然其意义远不止于此，在后续优化中有很大用处。<br>$$<br>\mathrm{VP}_\mathrm{Sub}(G) &#x3D; \{ a\in\mathbb R^{|V|}:\mathbb 1(a)\in \mathrm{VP}(G), 0\leq a_i\leq 1 \}<br>$$<br>接下来求解就在这个子集上进行操作了，减少了求解域的大小。</p>
+<p>但这个子集仍然需要计算独立的集合指标矩阵 $B$，这<strong>仍然是 NP-hard</strong>。</p>
+<h4 id="正交表示解决求独立集的复杂问题"><a href="#正交表示解决求独立集的复杂问题" class="headerlink" title="正交表示解决求独立集的复杂问题"></a>正交表示解决求独立集的复杂问题</h4><p>首先介绍什么是正交表示，简单来说是模长为1，非相邻节点的编码正交形成的编码集合：<br>$$<br>\mathcal T(G):&#x3D;{Z\in\mathbb R^{n\times d}: |z_i|_2&#x3D;1\  \mathrm{for}\ i&#x3D;1,2,…,n;z_i^{\top}\boldsymbol z_j&#x3D;0, \forall(i,j)\notin E}.<br>$$<br>本文提出Theorem，我认为这是本文<strong>最重要</strong>的点：</p>
+<p><img src="/../pic/image-20240802093214151.png"></p>
+<p>证明在附录中给出了。</p>
+<p>正是因为这个原因，将 $\mathrm{VP}_\mathrm{Sub}(G)$ 条件转化为 $D_a(ZZ^{\top})D_a&#x3D;D_a^2$。从而优化问题转换为：</p>
+<p><img src="/../pic/image-20240802093434718.png"></p>
+<p>那么 ‘s.t.’ 如何在模型中作出限制呢？</p>
+<h4 id="从有限制优化到非限制优化"><a href="#从有限制优化到非限制优化" class="headerlink" title="从有限制优化到非限制优化"></a>从有限制优化到非限制优化</h4><p>对于上面的第一个约束，采用优化如下目标得到：<br>$$<br>\mathcal L_{\mathrm{orth}}(\mathcal G;\phi):&#x3D;\sum_{j&#x3D;1}^N\left|M_j\odot\left(\boldsymbol Z_j^\phi(\boldsymbol Z_j^\phi)^\top-\boldsymbol I_n\right)\right|F^2<br>$$<br>其中 $M_j&#x3D;1_{n_j\times n_j}-A_j$ ，脚标代表第 $j$ 个图。事实上就是一个mask矩阵。</p>
+<p>对于上面的第二个约束：<br>$$<br>\mathcal L_{\mathrm{s-vp}}(\mathcal G;\theta,\phi,\mathcal A):&#x3D;\sum_{j&#x3D;1}^N\left|D_{a_j}\left(\boldsymbol Z_j^{\phi}(\boldsymbol Z_j^{\phi})^{\top}\right)\boldsymbol D_{a_j}-\boldsymbol D_{a_j}^2\right|^2<br>$$</p>
+<p>$$<br>\mathrm{s.t.} 0\leq a_{ij}\leq1, \forall i\in[n_j], \boldsymbol{a}_j\in\mathcal A<br>$$</p>
+<p>这样就大大降低了约束条件。</p>
+<p>接下来就是对Loss的优化，因为需要$\max\min$，因此采用交替优化如下两个过程：</p>
 <ul>
-<li>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2303.09778">2303.09778] SE-GSL: A General and Effective Graph Structure Learning Framework through Structural Entropy Optimization (arxiv.org)</a></li>
+<li><p>优化图编码器参数：<br>$$<br>\theta^{(t+1)},\phi^{(t+1)}&#x3D;\operatorname*{argmax}_{\theta,\phi}\mathcal J_1(\mathcal G;\theta,\phi,\mathcal A^{(t)})<br>$$</p>
+<p>$$<br>\mathcal J_1(\mathcal G;\theta,\phi,\mathcal A):&#x3D;\mathcal L_{H_k}(\mathcal G;\theta,\phi,\mathcal A)-\mu\cdot\mathcal L_{\mathrm{orth}}(\mathcal G;\phi)-\gamma\cdot\mathcal L_{\mathrm{s-vp}}(\mathcal G;\theta,\phi,\mathcal A)<br>$$</p>
+</li>
+<li><p>优化 $a$：<br>$$<br>\mathcal A^{(t+1)}&#x3D;\underset{\mathcal A\in\mathcal C}{\operatorname*{argmin}}\mathcal J_2(\mathcal G;\theta^{(t+1)},\phi^{(t+1)},\mathcal A )<br>$$</p>
+<p>$$<br>\mathcal J_2(\mathcal G;\theta,\phi,\mathcal A):&#x3D;\mathcal L_{H_k}(\mathcal G;\theta,\phi,\mathcal A)+\gamma\cdot\mathcal L_{\mathrm{s-vp}}(\mathcal G;\theta,\phi,\mathcal A)<br>$$</p>
+</li>
 </ul>
+<p>特别的，在 $a$ 更新时，用函数将其限制在 $[0,1]$：<br>$$<br>\operatorname{Proj}_{[0,1]}\left(\bar a\right)&#x3D;\begin{cases}0,&amp;\text{if}\ \bar a\leq0,\\1,&amp;\text{if}\ \bar a\geq1,\\ \bar a,&amp;\text{otherwise}.\end{cases}<br>$$<br>至此，大功告成！</p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><p>本文实验进行了很多，除了下面的还有很多，都在最终的<strong>附录</strong>中。</p>
+<h4 id="不同原则之间的比较"><a href="#不同原则之间的比较" class="headerlink" title="不同原则之间的比较"></a>不同原则之间的比较</h4><ul>
+<li><p>InfoMax：最大化图级和节点级表示之间的互信息<br>$$<br>\phi^*,\theta^*,\varphi^*&#x3D;\arg\max_{\phi,\theta,\varphi}\sum_{j&#x3D;1}^{|\mathcal G|}\frac1{|V_j|}\sum_{i\in V_j}I_\varphi(\boldsymbol g_j^\theta,\boldsymbol z_{ij}^\phi),<br>$$</p>
+</li>
+<li><p>Lovasz Principle：其中$\ell_\text{orth}$是正交正则化（orthonormal regularization）<br>$$<br>\phi^*,\theta^*&#x3D;\arg\min_{\phi,\theta}\sum_{j&#x3D;1}^{|\mathcal G|}\max_{i\in V_j}\frac1{\left((z_i^\phi)^\top g_j^\theta\right)^2}+\eta\ell_\text{orth}(\mathcal G;\theta,\phi),<br>$$</p>
+</li>
+</ul>
+<p>具体方法可在<strong>附录</strong>中找到。文章探究了在如上原则与本文提出的最大化图熵的实验效果：</p>
+<h5 id="在非监督学习中："><a href="#在非监督学习中：" class="headerlink" title="在非监督学习中："></a>在非监督学习中：</h5><p><img src="/../pic/image-20240801233326255.png"></p>
+<p><img src="/../pic/image-20240801233408485.png"></p>
+<h5 id="在半监督学习中："><a href="#在半监督学习中：" class="headerlink" title="在半监督学习中："></a>在半监督学习中：</h5><p><img src="/../pic/image-20240801233440667.png"></p>
+<p><img src="/../pic/image-20240801233504193.png"></p>
+<h4 id="最大化不同熵计算方法之间的比较"><a href="#最大化不同熵计算方法之间的比较" class="headerlink" title="最大化不同熵计算方法之间的比较"></a>最大化不同熵计算方法之间的比较</h4><ul>
+<li><p>Shannon entropy：<br>$$<br>J_\mathrm{Sh}(\mathcal G;\theta,\phi)&#x3D;\sum_j^{|\mathcal G|}\sum_{i\in V_j}-P_i(\mathbf g^\theta,\boldsymbol Z^\phi)\log(P_i(\mathbf g^\theta,\boldsymbol Z^\phi))<br>$$</p>
+</li>
+<li><p>Renyi entropy：<br>$$<br>J_\text{Renyi}(\mathcal G;\theta,\phi)&#x3D;\sum_j^{|\mathcal G|}\frac1{1-\alpha}\log\left(\sum_{i\in V_j}(P_i(\mathbf g^\theta,\boldsymbol Z^\phi))^\alpha\right)<br>$$</p>
+</li>
+</ul>
+<p>当然还包括本文中的结构熵，来进行比较。</p>
+<h5 id="在非监督学习中：-1"><a href="#在非监督学习中：-1" class="headerlink" title="在非监督学习中："></a>在非监督学习中：</h5><p><img src="/../pic/image-20240801234032946.png"></p>
+<p><img src="/../pic/image-20240801234053411.png"></p>
+<h5 id="在半监督学习中：-1"><a href="#在半监督学习中：-1" class="headerlink" title="在半监督学习中："></a>在半监督学习中：</h5><p><img src="/../pic/image-20240801234405457.png"></p>
+<p><img src="/../pic/image-20240801234113983.png"></p>
+<h4 id="消融实验、灵敏度分析、本文熵在不同模型上的效果"><a href="#消融实验、灵敏度分析、本文熵在不同模型上的效果" class="headerlink" title="消融实验、灵敏度分析、本文熵在不同模型上的效果"></a>消融实验、灵敏度分析、本文熵在不同模型上的效果</h4><p>见附录。</p>
  
       <!-- reward -->
       
@@ -237,7 +254,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/07/18/Structural%20Entropy%20based%20GSL/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/08/01/GeMax/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -250,19 +267,19 @@
    
   <nav class="article-nav">
     
-      <a href="/2024/07/25/GIB/" class="article-nav-link">
+      <a href="/2024/08/01/rethinking%20CEL/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            《Graph Information Bottleneck》论文解读
+            《Rethinking Independent Cross-Entropy Loss For Graph-Structured Data》论文解读
           
         </div>
       </a>
     
     
-      <a href="/2024/07/17/MinGE/" class="article-nav-link">
+      <a href="/2024/07/26/DGIB/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">《Graph Entropy Guided Node Embedding Dimension Selection for Graph Neural Networks》论文解读</div>
+        <div class="article-nav-title">《Dynamic Graph Information Bottleneck》论文解读</div>
       </a>
     
   </nav>
