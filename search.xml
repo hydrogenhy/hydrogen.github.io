@@ -1490,9 +1490,57 @@
   </entry>
   <entry>
     <title>《Rethinking Independent Cross-Entropy Loss For Graph-Structured Data》论文解读</title>
-    <url>/2024/08/01/rethinking%20CEL/</url>
+    <url>/2024/08/02/rethinking%20CEL/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://proceedings.mlr.press/v235/zhang24bt.html">click here</a></p>
 <p>code：<a href="https://github.com/MR9812/Joint-Cluster-Supervised-Learning">Joint-Cluster(github)</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是来自2024ICML的论文。</p>
+<p> 对于节点的表示与预测，会存在如下问题：</p>
+<ul>
+<li>由独立条件分布 $P(y_i|z_i)$ 和 $CE(y_i, P(y_i|z_i))$ 所导致的：<ul>
+<li>过拟合</li>
+<li>容易受到adversarial attacks的影响 <span id="more"></span></li>
+</ul>
+</li>
+<li>基于独立同分布的假设：$P(y_1,\cdots,y_n|z_1,\cdots,z_n)&#x3D;\prod P(y_i|z_i)$<ul>
+<li>这种通过独立同分布的假设从而直接分解 $P$，导致未能全面解释固有的节点相关性。</li>
+</ul>
+</li>
+</ul>
+<p>本文的解决方式就是将图分成不同的集团，根据<strong>自身emb</strong>和聚类后某一<strong>集团整体的emb</strong>来进行联合概率密度的计算。最终的模型有显著<strong>泛化</strong>能力的提升，为被攻击节点生成更<strong>稳健的分类</strong>，正确率更高。</p>
+<p><strong>可以理解为本文提出的是一种损失函数形势，或者说计算方法。</strong></p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240803140117367.png"></p>
+<h4 id="联合分布的建模与优化函数"><a href="#联合分布的建模与优化函数" class="headerlink" title="联合分布的建模与优化函数"></a>联合分布的建模与优化函数</h4><p>想要计算完全的联合分布的话，我们的目标其实就是求解 $p(y_1,\ldots,y_L\mid z_1,\ldots,z_L;\tilde{\theta})$，维度为 $\mathbb R^{c^L}$，这显然是难以计算的，所以我们将其向下转变为：图由若干独立集组成，即 $\{\mathcal C_1, \dots,\mathcal C_M\}$，，那么我们的联合分布便可以由若干独立集的分布相乘得到：<br>$$<br>p\left(y_1,\ldots,y_L:\mid z_1,\ldots,z_L;\theta\right)&#x3D;\prod_{m&#x3D;1}^Mp\left(\{y_i\mid v_i\in\mathcal C_m\}\mid\{z_i\mid v_i\in\mathcal C_m\} ;\theta\right)<br>$$<br>这种集群上的 i.i.d 假设在一定程度上降低了计算复杂度，但节点子集的<strong>联合建模仍然不切实际</strong>，并且<strong>不适合用于推断测试节点的类</strong>。</p>
+<p>针对这个问题，采用每一集团的特征 $\bar y_m, \bar z_m$ 来代替集团信息，联合分布也就变换为：<br>$$<br>p (y_i,\bar y_m\mid z_i,\bar z_m,;\theta),<br>$$<br>所以我们优化的实际内容是这样的：</p>
+<p><img src="/../pic/image-20240803142847475.png"></p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>关于cluster的分割，这里采用的是 <strong>METIS 图聚类</strong>算法。</p>
+<p>子团的信息：采用平均池化 $\bar z_m &#x3D; 1&#x2F;L_m\sum_{i&#x3D;1}^{L_m}z_i, \ \bar y_m &#x3D; 1&#x2F;L_m\sum_{i&#x3D;1}^{L_m}y_i$，因此“真实的”联合分布概率定义为 $y_i\bar y_m$，而模型训练是通过将当<strong>前节点的emb与cluster的emb拼接</strong>后经过<strong>图分类器</strong>得到的。<br>$$<br>\mathcal L_{JC}&#x3D;-\sum_{i&#x3D;1}^L{(y_i\bar y_m^{\top})\cdot\log g_{\phi}\left(\text{con}\left(z_i,\bar z_m\right)\right)+(\bar y_my_i^{\top})\cdot\log g_{\phi}\left(\text{con}\left(\bar z_m,z_i\right)\right)}<br>$$<br>为了<strong>对称</strong>联合分布建模，在上述方程的第二项，将节点和集群嵌入的位置进行交换。</p>
+<h4 id="从联合分布到边缘分布"><a href="#从联合分布到边缘分布" class="headerlink" title="从联合分布到边缘分布"></a>从联合分布到边缘分布</h4><p>$$<br>\begin{aligned}<br>p(y_i |z_i;\theta)&amp;&#x3D;\int_{\mathbb R^d}\sum_{k&#x3D;1}^c p(y_i,\bar y_m&#x3D;k\mid z_i,\bar z,;\theta)q(\bar z)d \bar z \\<br>&amp;&#x3D;\sum_{k&#x3D;1}^c p(y_i,\bar y_m&#x3D;k\mid z_i,\bar z_m,;\theta)<br>\end{aligned}<br>$$</p>
+<p>等号能过去的原因是子团之间是独立的。</p>
+<p>也就是说给定了联合分布 $ p(y_i,\bar y_m\mid z_i,\bar z_m,;\theta) \leftrightarrow y_i\bar y_m^\top$，对其进行逐行求和便是 $y_i$ 类别的边缘分布。</p>
+<p>值得注意的是，<strong>在模型的推断过程中，训练中cluster的emb的被利用的</strong>。这个操作和batch norm中的run_mean、run_var是一致的。</p>
+<h4 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h4><p><img src="/../pic/image-20240803140511284.png"></p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><p>除去正文中展示的实验，其在附录中还存在实验结果。此处只展示部分正文中的实验。</p>
+<h4 id="小规模图数据集"><a href="#小规模图数据集" class="headerlink" title="小规模图数据集"></a>小规模图数据集</h4><p>类别均衡：</p>
+<p><img src="/../pic/image-20240803152609166.png"></p>
+<p>类别不均衡：</p>
+<p><img src="/../pic/image-20240803152643124.png"></p>
+<p>异质图：</p>
+<p><img src="/../pic/image-20240803152715825.png"></p>
+<h4 id="大规模图数据"><a href="#大规模图数据" class="headerlink" title="大规模图数据"></a>大规模图数据</h4><p><img src="/../pic/image-20240803152740238.png"></p>
+<h4 id="对抗攻击"><a href="#对抗攻击" class="headerlink" title="对抗攻击"></a>对抗攻击</h4><p><img src="/../pic/image-20240803152913681.png"></p>
+<h4 id="泛化性更好"><a href="#泛化性更好" class="headerlink" title="泛化性更好"></a>泛化性更好</h4><p><img src="/../pic/image-20240803153455154.png"></p>
+<p>他的训练与测试集的误差gap更小。</p>
+<hr>
+<h3 id="思考与想法"><a href="#思考与想法" class="headerlink" title="思考与想法"></a>思考与想法</h3><ul>
+<li><p>本文实际上是吧原本的一维分类交叉熵变为二维的交叉熵。</p>
+</li>
+<li><p>这里的cluster是训练前直接根据图结构生成的，那么每一个cluster内部label是否一致？或者说这个cluster对节点预测是否有作用（是否是对的）</p>
+</li>
+<li><p>将图分为若干子团的方法是可以借鉴的</p>
+</li>
+</ul>
 ]]></content>
       <categories>
         <category>深度学习</category>
