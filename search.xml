@@ -1551,4 +1551,69 @@
         <tag>图神经网络</tag>
       </tags>
   </entry>
+  <entry>
+    <title>《Delaunay Graph：Addressing Over-Squashing and Over-Smoothing Using Delaunay Triangulation》论文解读</title>
+    <url>/2024/08/09/Delaunay%20Graph/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://openreview.net/pdf?id=uyhjKoaIQa">click here</a></p>
+<p>code：<a href="https://github.com/Hugo-Attali/Delaunay-Rewiring/blob/main">Delaunay Graph(github)</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是来自2024ICML的论文。</p>
+<p>图神经网络在计算节点的特征时采用了聚合的思路，但随着gnn层数的增长，会面对如下两个问题：</p>
+<ul>
+<li><p><strong>Over-smoothing</strong>：如果GNN层很深的话，随着聚合节点的不断扩散，任意两个节点所共享的邻居就会非常多（感受野重叠），导致这两个节点的嵌入非常相似。<span id="more"></span></p>
+<p><img src="/../pic/869d48783ef46b9e15b4924b497da972.png"></p>
+</li>
+<li><p><strong>Over-Squashing</strong>：随着层数的增加，一个结点的k-hop邻居的数量将会呈指数的形式增长，但是与前几层gnn相比，更多的信息被压缩到了一个定长的向量中，这就是 over squashing。</p>
+<p><img src="/../pic/8969f6d4a50ada9a8a471cf99feb7023.png"></p>
+</li>
+</ul>
+<p>本文就针对这两个现象，通过改变图结构来得到更好的gnn效果。</p>
+<p>与前人的工作不同，此工作<strong>不需要原始的图结构信息</strong>，即仅根据feature即可对图结构进行重构。</p>
+<p>本工作从曲率的角度出发，通过引入Delaunay rewiring方法来使得最大化曲率。</p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240809165221218.png"></p>
+<h4 id="曲率计算方式"><a href="#曲率计算方式" class="headerlink" title="曲率计算方式"></a>曲率计算方式</h4><p><strong>Augmented Forman Curvature</strong>：此种曲率度量建议考虑图中的三角形来扩展 Forman 的曲率，以使其更具表现力。对于无向图，边 $e_{ij}$ 的曲率 $c_{ij}$ 计算如下:<br>$$<br>c_{ij}&#x3D;4-d_i-d_j+3m<br>$$<br>其中 $m$ 是包含 $e_{ij}$ 的三角形数。</p>
+<p><strong>Balanced Forman Curvature</strong>：考虑了四元环：<br>$$<br>c_{ij}&#x3D;\frac2{d_i}+\frac2{d_i}-2\frac m{\max(d_i,d_j)}+\frac m{\min(d_i,d_j)} + \frac {(\Gamma_{max})^{-1}}{\max(d_i,d_j)}(\gamma_i+\gamma_j)<br>$$</p>
+<ul>
+<li>$\Gamma_{max}(i,j)$ 代表以 $e_{ij}$ 为边且过相同其它节点的四元环数目的最大值</li>
+<li>$\gamma_i$ 代表以 $e_{ij}$ 为边，参与到形成<strong>无对角线</strong>的四元环中 $i$ 的邻居的数目</li>
+</ul>
+<p><a href="https://openreview.net/pdf?id=7UmjRGzp-A">这篇论文</a>有详细的介绍。</p>
+<h4 id="Delaunay三角剖分"><a href="#Delaunay三角剖分" class="headerlink" title="Delaunay三角剖分"></a>Delaunay三角剖分</h4><p>对于 $d$ 维欧几里得空间中的一组点集合 $P$，Delaunay 三角剖分表示为 $DT (P )$，是一个三角剖分，其中 $P$ 中没有点位于 $DT (P)$ 中任何 d-单纯形的环绕超球面内。</p>
+<p><a href="https://blog.csdn.net/qq_39784672/article/details/131067426">网上资料</a>有如下描述：</p>
+<p><img src="/../pic/image-20240809165814229.png"></p>
+<p>这种剖分方法有两点好处：</p>
+<ul>
+<li>最大化由一组点形成的三角形的角度，努力创建尽可能接近等边三角形。（最大化三角形中最小角度的读书）</li>
+<li>它确保每个三角形的外接圆不包含集合中的其他点</li>
+</ul>
+<p>而这导致：<strong>两个节点越像，则越可能在一个三角形内</strong>。</p>
+<p>为了缓解Over-Squashing的问题，我们希望<strong>减少负弯曲边的数量</strong>。根据曲率的许多定义，入射在边缘上的三角形数量 $m$ 在增加边缘曲率方面起着重要作用。应用三角剖分可以最大化上述两个曲率的值，同时确保最大团大小为 3。</p>
+<h4 id="实验流程"><a href="#实验流程" class="headerlink" title="实验流程"></a>实验流程</h4><p><img src="/../pic/image-20240809163735329.png"></p>
+<p><strong>整体流程</strong>：首先对feature进行GNN编码，对得到的编码使用UMAP方法进行降为，对降维后的数据进行Delaunay三角剖分，最终在新的图结构上进行GNN的编码与预测。</p>
+<p><strong>为什么不直接对feature进行降维？</strong>因为作者发现这样的效果不好：</p>
+<p><img src="/../pic/image-20240809172549426.png"></p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><h4 id="初步检验图结构的有效性"><a href="#初步检验图结构的有效性" class="headerlink" title="初步检验图结构的有效性"></a>初步检验图结构的有效性</h4><p><strong>Homophily</strong>：图的<strong>同质性</strong>在确定节点分类任务体系结构的效率方面起着至关重要的作用。且有方法可以度量。对新得到的图结构计算其同质性，能够发现有极大的改善——一定程度上证明了方法的有效性。此外<strong>边的数量也大大减少</strong>。</p>
+<p><img src="/../pic/image-20240809172716523.png"></p>
+<p><strong>Ollivier curvature</strong>：使用Olliver的曲率(Ollivier, 2007)来统计图的曲率分布，因为它是有界的，更容易解释。在三角剖分之后构建的图，<strong>删除了自然高度负弯曲的边缘</strong>，这些边缘负责瓶颈（Ttopping 等人，2022），减轻Over-Squashing；得到的新图<strong>不具有强正弯曲的边缘</strong>，减轻Over-Smoothing。</p>
+<p><img src="/../pic/image-20240809173236484.png"></p>
+<p>其中 $D_i$ 代表第 $i$ 个十分位数。</p>
+<h4 id="实验部分"><a href="#实验部分" class="headerlink" title="实验部分"></a>实验部分</h4><h5 id="图结构已知"><a href="#图结构已知" class="headerlink" title="图结构已知"></a>图结构已知</h5><p>使用不同的图结构重构方法，对构造得到的新图进行分类任务。结果表明DR方法得到了最好的效果。</p>
+<p><img src="/../pic/image-20240809163501234.png"></p>
+<h5 id="图结构未知"><a href="#图结构未知" class="headerlink" title="图结构未知"></a>图结构未知</h5><p>在图结构未知的情况下，与基本的 $k$-NN 方法进行比对，依旧DR效果整体更优：</p>
+<p><img src="/../pic/image-20240809163648408.png"></p>
+<hr>
+<h3 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h3><p>这篇论文是我目前看到的思路很简单代码也很少的例子之一，清晰地提出了一个思路，有着很简单的实施过程，但是有着很好地实验效果——四两拨千斤的感觉。</p>
+<p>感觉很有意思。</p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>图神经网络</tag>
+        <tag>Over-Squashing</tag>
+        <tag>Over-Smoothing</tag>
+      </tags>
+  </entry>
 </search>
