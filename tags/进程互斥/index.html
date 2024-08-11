@@ -82,11 +82,14 @@
 
     
 
+    let pageWidth = document.documentElement.clientWidth;
+    let leftPosition = pageWidth * 0.50;
+
     let option = {
         title: {
             top: 0,
             text: '文章日历',
-            left: 'center',
+            left: leftPosition - 28 + 'px',
             textStyle: {
                 color: '#3C4858'
             }
@@ -118,7 +121,7 @@
             bottom: 0
         },
         calendar: [{
-            left: 'center',
+            left: leftPosition - 385 + 'px',
             range: ["2023-08-11", "2024-08-11"],
             cellSize: [15, 15],
             splitLine: {
