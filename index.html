@@ -264,6 +264,103 @@
 
     
     <article
+  id="post-Edge Entropy"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2024/08/11/Edge%20Entropy/"
+    >《Edge Entropy as an Indicator of the Effectiveness of GNNs over CNNs for Node Classification》论文解读</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/08/11/Edge%20Entropy/" class="article-date">
+  <time datetime="2024-08-11T05:54:20.000Z" itemprop="datePublished">2024-08-11</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>论文传送门：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9443451">click here</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>这是CMU在2021 Asilomar Conference上的一篇工作。</p>
+<p>GNN与CNN的区别在于，GNN引入了图的结构信息。从实验结果来看，有效的图结构训练结果要远好于简单的单位阵或随机矩阵当做图结构的结果：</p>
+<p><img src="/../pic/image-20240811140440410.png"></p>
+<p>那么结构信息对GNN有了什么样的帮助呢，这篇文章基于此提出两个问题：</p>
+<ul>
+<li>如何评估图结构对GNN的有效性？</li>
+<li>如何评估图结构的有效性？</li>
+</ul>
+<p>本文以<strong>边缘熵</strong>的思想来对如上问题进行解答。</p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><h4 id="直观而言"><a href="#直观而言" class="headerlink" title="直观而言"></a>直观而言</h4><p><img src="/../pic/image-20240811140646283.png"></p>
+<ul>
+<li>(a) 每一个团都只有一类，那么知道其邻居的颜色自身颜色就知道了。但是 (b) 不行</li>
+<li>intra-class ration能够代表一定信息，如 (c) 邻居与本身类别一致比例是0，能够提供信息</li>
+<li>clustering coefficient能够作为一个指标，比如 (d) 完全图的聚类系数为1，基本不提供信息</li>
+</ul>
+<p>如何找到一个通用的评判方法？——Edge Entropy。</p>
+<h4 id="Edge-Entropy"><a href="#Edge-Entropy" class="headerlink" title="Edge Entropy"></a>Edge Entropy</h4><p>设图 $G$ 有 $M$ 类别，对于任意类别 $l$ 当前类别的熵为：</p>
+<p>计算方式如下：<br>$$<br>H(l):&#x3D;-\sum_{m\in\{1,\dots,M\}}p_{lm}(n)\log_M(p_{lm}(n))<br>$$<br>其中：<br>$$<br>p_{lm}:&#x3D;\frac{|{\text{edge }w:\text{start}(w)\in\mathcal V_l\wedge\text{end}(w)\in\mathcal V_m}|}{|{\text{edge }w:\text{start}(w)\in\mathcal V_l}|}<br>$$<br>最终整个图的Edge Entropy就可以计算为：<br>$$<br>\hat H&#x3D;-\sum_{m\in\{1,\dots,M\}} H(m)w_m<br>$$<br>$w_m$ 就是第 $m$ 类节点个数的占比。</p>
+<p>接下来就是实验部分——这个特征如何刻画efficiency。</p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><h4 id="在自建图上的实验"><a href="#在自建图上的实验" class="headerlink" title="在自建图上的实验"></a>在自建图上的实验</h4><p>文章生成具有<strong>特定边缘熵</strong>的合成数据集。$r_i$ 代表第 $i$ 类节点数量，同时有 $\sum r_i&#x3D;N$。</p>
+<p>为了具有特定的边缘熵，生成的连通图必须在每个类的节点之间<strong>有一定数量的边</strong>。通过创建一个具有所需边缘熵的 $M \times M$ 矩阵 $T$，其中 $T_{i,j}$ 是将类 $i$ 节点连接到类 $j$ 节点的边数。我们对 $T$ 的每一行进行归一化以产生概率矩阵 $P$ （实际上每一元素就是 $p_{l,m}$）。同时设置了一个变量 $\rho$。</p>
+<p><strong>具体图构建方法为</strong>：从 $N$ 个孤立节点开始。每个节点都有一个自循环和随机特征。根据类 $r_i$ 的节点分布，为每个节点分配一个标签。然后我们考虑每对节点 $v_i, v_j$ ，对于每对节点，我们以 $\rho P_{l,m}$ 的概率从 $v_i$ 到 $v_j$ 创建一个有向边，其中 $l$ 是 $v_i$ 的类，$m$ 是 $v_j$ 的类。</p>
+<p>设置参数 $N&#x3D;3000,M&#x3D;300,r_1&#x3D;r_2&#x3D;r_3&#x3D;1&#x2F;3,\rho_1&#x3D;0.1,\rho_2&#x3D;0.5$，同时设置低熵 $\hat H_{low} \approx 0.52$ 和高熵 $\hat H_{low} \approx 0.97$ 对应的概率矩阵：<br>$$<br>P_{\text{low}}&#x3D;\begin{bmatrix}0.8&amp;0.05&amp;0.15\\0.05&amp;0.9&amp;0.05\\0.27&amp;0.03&amp;0.7\end{bmatrix}, P_{\text{high}}&#x3D;\begin{bmatrix}0.4&amp;0.26&amp;0.34\\0.2&amp;0.5&amp;0.3\\0.33&amp;0.31&amp;0.37\end{bmatrix}<br>$$<br>简单来说：$\rho$ 代表在相对比率不变的情况下控制边生成的比例，$P$ 控制边的相对生成比例。</p>
+<p>根据如上参数构建四个数据集：</p>
+<ul>
+<li>dense_low：$\rho_2,P_{low}$</li>
+<li>sparse_low：$\rho_1,P_{low}$</li>
+<li>dense_high：$\rho_2,P_{high}$</li>
+<li>sparse_high：$\rho_1,P_{high}$</li>
+</ul>
+<p>实验结果为：</p>
+<p><img src="/../pic/image-20240811144320893.png"></p>
+<p>即<strong>低熵更好</strong>。（为什么不对dense和sparse再进行一下对比）</p>
+<p>此外坐着还用了一些真实的数据集来证明这个结论，这里不做展示。</p>
+<p>核心就是，Edge Entropy能够代表图结构的作用，并且结论是低熵better。</p>
+<hr>
+<h3 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h3><p>从<strong>边缘上进行熵</strong>的计算是一种不错的思路。与经典的图熵不同，边缘能够考虑相邻两个节点的关系以及本身的结构关系，是一种更加合理的结构原子（一个点的度终究核心还是一个节点，结构信息可能不够全面）。</p>
+<p>整篇论文读下来感觉很有道理，但仔细想想似乎也没有什么意料之外的内容，毕竟我们很容易有意识到边的链接以及图的复杂性会影响GNN表现能力。</p>
+<p>但是能够借鉴的，或许可以通过label计算出当前边缘的分布概率，换句话来说可以从<strong>大的结构上来计算某一区域structure的分布，计算熵</strong>（这才是我觉得合理的结构熵，而非还是着眼于小的点）。</p>
+<p>此外根据label计算structure能够有效的将feature与structure进行结合，更加对图结构的信息进行统一刻画。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/" rel="tag">信息论</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">图神经网络</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+   
+  
+</article>
+
+    
+    <article
   id="post-Delaunay Graph"
   class="article article-type-post"
   itemscope
@@ -736,70 +833,6 @@
 <h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本篇论文是2021IJCAI上的论文。</p>
 <p>在Node Embedding Dimension Selection (NEDS)问题中，对于编码维度的设置，常使用梯度搜索或者经验知识的方法来进行选择，但这种方法面临着<strong>庞大的计算量和较差的模型表现</strong>等问题。</p> 
       <a class="article-more-link" href="/2024/07/17/MinGE/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/" rel="tag">信息论</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">图神经网络</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-  
-</article>
-
-    
-    <article
-  id="post-Deep Graph Infomax"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2024/07/14/Deep%20Graph%20Infomax/"
-    >《Deep Graph Infomax》论文解读</a> 
-</h2>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2024/07/14/Deep%20Graph%20Infomax/" class="article-date">
-  <time datetime="2024-07-14T12:35:44.000Z" itemprop="datePublished">2024-07-14</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <p>论文传送门：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1809.10341">click here</a></p>
-<p>推荐参考链接：</p>
-<ul>
-<li>DIM：<a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2018-10-12-11">深度学习中的互信息：无监督提取特征 | 机器之心 (jiqizhixin.com)</a></li>
-<li>$f$ 散度($D_f$)的估算：<a target="_blank" rel="noopener" href="https://kexue.fm/archives/6016">f-GAN简介：GAN模型的生产车间 - 科学空间|Scientific Spaces (kexue.fm)</a></li>
-</ul>
-<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3> 
-      <a class="article-more-link" href="/2024/07/14/Deep%20Graph%20Infomax/"
         >阅读更多...</a
       >
        
