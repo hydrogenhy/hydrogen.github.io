@@ -72,7 +72,7 @@
         height: 225px;
         margin-top: 20px;
         border-radius: 12px;
-        background-color: rgb(255, 255, 255,0.5);
+        /* background-color: rgb(255, 255, 255,0.5); */
     }
 </style>
 
@@ -82,6 +82,7 @@
 
     
 
+    
     let pageWidth = document.documentElement.clientWidth;
     let leftPosition = pageWidth * 0.50;
 
@@ -91,7 +92,7 @@
             text: '文章日历',
             left: leftPosition - 28 + 'px',
             textStyle: {
-                color: '#3C4858'
+                color: '#fb9809'
             }
         },
         tooltip: {
@@ -118,17 +119,21 @@
             itemHeight: 12,
             orient: 'horizontal',
             left: 'center',
-            bottom: 0
+            bottom: 0,
+            textStyle: {
+                color: '#fb9809'  // 设置标签文字颜色为白色
+            }
         },
         calendar: [{
             left: leftPosition - 385 + 'px',
             range: ["2023-08-11", "2024-08-11"],
+            range: ["2023-08-11", "2024-08-11"],
             cellSize: [15, 15],
             splitLine: {
-                show: false,
+                show: true,
                 lineStyle: {
-                    color: '#00E5EE',  // 分割线颜色，示例为红色
-                    width: 1.5           // 分割线粗细，示例为2像素
+                    color: '#939393',  // 分割线颜色，示例为红色
+                    width: 1           // 分割线粗细，示例为2像素
                 }
             },
             itemStyle: {
@@ -145,7 +150,8 @@
                 nameMap: 'en',
                 fontWeight: 'bold',
                 fontFamily: 'Consolas ',
-                fontSize: 12
+                fontSize: 12,
+                color: '#fb9809'
             },
             dayLabel: {
                 show: true,
@@ -154,7 +160,8 @@
                 fontFamily: 'Consolas ',
                 nameMap: ['Sun','Mon','Tue','Wen','Thu','Fir','Sat',],
                 // nameMap: 'en',
-                fontSize: 12
+                fontSize: 12,
+                color: '#fb9809'
             }
         }],
         series: [{
@@ -165,8 +172,10 @@
         }]
 
     };
+    
 
     myChart.setOption(option);
+
 </script>
 
     
