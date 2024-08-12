@@ -357,6 +357,40 @@
 
 </section>
       <footer class="footer">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runtime Display</title>
+    <style>
+        /* 将运行时间的容器居中并加粗 */
+        #runtime_span {
+            display: block;
+            text-align: center; /* 居中 */
+            font-weight: bold;  /* 加粗 */
+            font-size: 18px;    /* 调整字体大小 */
+        }
+    </style>
+  </head>
+  <span id="runtime_span"></span>
+  <script type="text/javascript">
+  function show_runtime() {
+      window.setTimeout("show_runtime()", 1000);
+      X = new Date("2023/07/16 00:22:00"); // 网站开始运行的日期和时间
+      Y = new Date(); // 当前日期和时间
+      T = (Y.getTime() - X.getTime()); // 网站运行的总毫秒数
+      M = 24 * 60 * 60 * 1000; // 一天的毫秒数
+      a = T / M; // 总天数
+      A = Math.floor(a); // 总天数的整数部分
+      b = (a - A) * 24; // 总小时数
+      B = Math.floor(b); // 总小时数的整数部分
+      c = (b - B) * 60; // 总分钟数
+      C = Math.floor((b - B) * 60); // 总分钟数的整数部分
+      D = Math.floor((c - C) * 60); // 总秒数
+      runtime_span.innerHTML = "⏱️勉强运行 <span class='runtime'>" + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒</span>";
+  }
+  show_runtime();
+  </script> 
+  
   <div class="outer">
     <ul>
       <li>
@@ -395,6 +429,7 @@
       </li>
     </ul>
   </div>
+  
 </footer>    
     </main>
     <div class="float_btns">
