@@ -41,6 +41,64 @@
       </tags>
   </entry>
   <entry>
+    <title>《Residual Entropy-based Graph Generative Algorithms》论文解读</title>
+    <url>/2024/08/18/Residual%20Entropy/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://dl.acm.org/doi/10.5555/3535850.3535942">click here</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是AAMAS 2022中的一片工作。</p>
+<p>本篇文章的核心工作为：<strong>设计了一种通过原图构造防御图的算法（非神经网络）</strong>。其意义在于通过对原始graph进行加边处理使得其结构信息更加显著，从而帮助模型更好的学习到structure信息。</p>
+<p>文章通过1-dimensional structure entropy和2-dimensional structure entropy定义出残差熵（Residual Entropy），这个熵反映了图结构所携带的信息——本文希望最大化这个量。</p>
+<p>文章通过残差熵的定义推导出使得残差熵增大的条件，进而根据这个条件对图进行加边处理，旨在提高图的残差熵，从而得到<strong>防御图</strong>。<span id="more"></span></p>
+<p>我之前看的论文大多是基于1-dimensional structure entropy，在架构上进行大大小小的改动。而这边文章从底层使用了一种不同的度量方法，因此我还是简单总结一下这篇文章的主要内容。</p>
+<p>这篇文章中从定义推导方法的过程值得借鉴，尽管我感觉有些不够严谨，但这个思路是能够将一个工作顺下来的。</p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240818115633508.png"></p>
+<h4 id="残差熵"><a href="#残差熵" class="headerlink" title="残差熵"></a>残差熵</h4><p>先介绍本文提出残差熵用到的两个熵计算方法：</p>
+<ul>
+<li><p>1-dimensional structure entropy: 1-dimensional structure entropy is defined by the average codeword length of <strong>all interactions</strong> from nodes in $V$。<br>$$<br>\mathcal H(G)&#x3D;-\sum_{v_i\in V}\frac{d_i}{2|E|}\log_2\frac{d_i}{2|E|}<br>$$<br>其中 $d_i$ 是节点 $v_i$ 的度，$E$ 是总边数。这个度量方式<strong>没有假设任何社区结构</strong>。</p>
+</li>
+<li><p>2-dimensional structure entropy: 2-dimensional structure entropy is defined by the average encode length of all calls with community partition $P$。<br>$$<br>\mathcal H_P(G)&#x3D;\sum_{j&#x3D;1}^L\left(-\frac{\nu_j}{2|E|}\mathcal H(G|X_j)-\frac{g_j}{2|E|}\log_2\frac{\nu_j}{2|E|}\right)<br>$$<br>$P&#x3D;\{X_1,\dots,X_L\}$ 是对节点的一个分割。 $\mathcal H(G|X_j) &#x3D; -\sum_{v_i\in X_j} \frac{d_i}{v_j}\log_2\frac{d_i}{v_j}$，$v_i$ 代表第 $i$ 个分割团 $X_i$ 的度之和；$g_i$ 代表只有一个端点在 $X_i$ 内的边数（其实就是连向外面的边数）。这个结构熵反映了一直社区机构后的信息熵。</p>
+</li>
+</ul>
+<p>接下来便可以引出残差熵（已normalized）了：<br>$$<br>\rho p:&#x3D;R_{P}&#x2F;\mathcal H(G), \quad R_P&#x3D;\mathcal H(G)-\mathcal H_P(G)&#x3D;\frac{v_j-g_j}{2|E|}\log_2\frac{v_j}{2|E|}<br>$$<br>残差熵<strong>表示有关图社区结构的信息量</strong>。一个相对高的残差熵表示分区 $P$ 包含更多的信息。</p>
+<h4 id="如何提高残差熵"><a href="#如何提高残差熵" class="headerlink" title="如何提高残差熵"></a>如何提高残差熵</h4><p>提高残差熵无非就两个思路：分子越大越好，分母越小越好。文章给出了几个引理和推论，简单来说如下：</p>
+<ul>
+<li>对分割 $X_i$ 内部加边后 $R_P$ 会增加更多。</li>
+<li>待加边两个端点的度之和越大，则加边后 $H$ 越小。</li>
+<li>若度之和相等，则待加边两个端点的度之差越小，加边后 $H$ 越小。</li>
+</ul>
+<p>根据以上三种规则，我们就可以实现加边算法了。</p>
+<h4 id="防御图构建算法"><a href="#防御图构建算法" class="headerlink" title="防御图构建算法"></a>防御图构建算法</h4><p>文中提到了两种攻击方法：无目标攻击（对全图进行攻击），有目标共计（对某一partial进行攻击）。</p>
+<p><img src="/../pic/image-20240818140718481.png"></p>
+<p>两个算法比较相似，只不过是作用域不同。核心思想与之前介绍的方法是一致的：目标加边集合的选取方法为：</p>
+<p><img src="/../pic/image-20240818140835357.png"></p>
+<p>具体就不过多介绍了，伪代码比较清晰。</p>
+<hr>
+<h3 id="实验设置与结果"><a href="#实验设置与结果" class="headerlink" title="实验设置与结果"></a>实验设置与结果</h3><p>文章使用了两种大类评估方法：</p>
+<ul>
+<li>不需要feature：Louvain、DeepWalk、SCD</li>
+<li>需要feature：GCN、GAT、SSP、GCN-LPA</li>
+</ul>
+<p>节点分类的评估指标采取标准化的互信息（Normalized Mutual Information，NMI）。</p>
+<h4 id="有目的加边-or-随机加边"><a href="#有目的加边-or-随机加边" class="headerlink" title="有目的加边 or 随机加边"></a>有目的加边 or 随机加边</h4><p>作者用随机加边作为对比，证明了加边的有效性（有目的当然会比随机加边好）。</p>
+<p><img src="/../pic/image-20240818141800928.png"></p>
+<h4 id="对无目标攻击的抵御"><a href="#对无目标攻击的抵御" class="headerlink" title="对无目标攻击的抵御"></a>对无目标攻击的抵御</h4><p>攻击方法为REM和DICE。流程为先攻击后训练（即对不完全正确的图结构进行学习）。怎么有的攻击完了反而更好，还好了不少。</p>
+<p><img src="/../pic/image-20240818142125546.png"></p>
+<h4 id="对有目标攻击的抵御"><a href="#对有目标攻击的抵御" class="headerlink" title="对有目标攻击的抵御"></a>对有目标攻击的抵御</h4><p>攻击方法为FDA和RND，流程与上面一样。</p>
+<p><img src="/../pic/image-20240818142353895.png"></p>
+<hr>
+<h3 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h3><p>本方法感觉还是有一些局限，比如只考虑了加边。或许这样方法的表现上线就已经被原图结构进行限制了。</p>
+<p>另外一个重要的点是添加的边数是超参数 $K$ 控制的（或者是是实验中 $K&#x3D;p|E|$ 的 $p$），所以其效果一定程度上还是依赖于人的参数设计的。</p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>信息论</tag>
+        <tag>图神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>一亩三分地——宿舍桌面v2.0版</title>
     <url>/2024/08/16/desktop/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>hi，陆陆续续，从上次装修宿舍以来也已经过了一年了吧。</p>
