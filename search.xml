@@ -41,10 +41,71 @@
       </tags>
   </entry>
   <entry>
+    <title>《Understanding over-squashing and bottlenecks on graphs via curvature》论文浅析</title>
+    <url>/2024/08/18/over-squashing%20and%20bottlenecks%20via%20curvature/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://openreview.net/pdf?id=7UmjRGzp-A">click here</a></p>
+<h3 id="论文简述"><a href="#论文简述" class="headerlink" title="论文简述"></a>论文简述</h3><p>本文是ICLR 2022中的一篇高分工作（openreview：10&#x2F;8&#x2F;8&#x2F;8）。</p>
+<p>本文从理论上提出了一种Ricci曲率计算方法，并根据对其的分析指出重要结论：<strong>负曲率是导致瓶颈的原因</strong>。而后将其与Cheeger constant联系，说明了他们一定程度上是比较相似的，后期也使用Cheeger constant来说明随机游走重建方法的劣势。<span id="more"></span></p>
+<p>根据Ricci曲率的计算方法与得到的结论，文章提出了一种<strong>仅仅基于图结构</strong>的图重建方法。此外，文章对当前基于随机游走的方法进行了分析，说明其并不能消除瓶颈效应。</p>
+<p>最后通过实验证明了方法的有效性。</p>
+<p><strong>与我之前介绍的ICML2024论文不同，那一篇只基于feature而不用structure，本篇只基于原始structure而不基于feature。</strong></p>
+<p>本文内容实在是太丰富且深入了。因此这里仅对文章的核心内容简单聊个大概。</p>
+<hr>
+<h3 id="Balanced-Forman-curvature"><a href="#Balanced-Forman-curvature" class="headerlink" title="Balanced Forman curvature"></a>Balanced Forman curvature</h3><p>这个定义是比较复杂的，我也不好简单对其进行描述，因此将原文的内容在这里展示。其中每一条每一句对理解都很重要。特别要搞清楚里面每个变量是怎么算出来的。</p>
+<p><img src="/../pic/image-20240818150323312.png"></p>
+<p>曲率反映了空间的性质，曲率大于0那么平行线会相交，等于0则距离不变，小于零会发散。分别对应着球形空间、平面和双曲空间：</p>
+<p><img src="/../pic/image-20240818150859196.png"></p>
+<hr>
+<h3 id="曲率与瓶颈"><a href="#曲率与瓶颈" class="headerlink" title="曲率与瓶颈"></a>曲率与瓶颈</h3><p>常见的信息传递范式如下：<br>$$<br>h_i^{(\ell+1)}&#x3D;\phi_\ell\left(h_i^{(\ell)},\sum_{j&#x3D;1}^n\hat A_{ij}\psi_\ell(h_i^{(\ell)},h_j^{(\ell)})\right)<br>$$<br>存在点 $i$ 二阶邻居的一个子集满足如下条件：</p>
+<p><img src="/../pic/image-20240818151111460.png"></p>
+<p>当 $\delta$ 越小，则导数绝对值越小，即点 $i$ 对 $k$ 的影响越小——信息瓶颈。又因为Ricci曲率本身有性质 $Ric(i,j)&gt;-2$，因此根据 $(ii)$ 可知 $\delta$ 越小也就代表着<strong>更大的负曲率</strong>。从而得到文章中可能是最重要的一个结论：</p>
+<p><img src="/../pic/image-20240818151409865.png"></p>
+<hr>
+<h3 id="Cheeger-constant"><a href="#Cheeger-constant" class="headerlink" title="Cheeger constant"></a>Cheeger constant</h3><p>图的spectral gap可以解释为<strong>图被划分为两个社区的拓扑障碍</strong>，这个量与图瓶颈有关。因此其应该可以由曲率控制。</p>
+<p>从一个直观的解释开始：假设我们得到一个图 $G$，其中两个社区由少数边分隔。在这种情况下，我们看到图可以很容易地断开连接——这就是一个瓶颈。</p>
+<p>具体度量方法为：</p>
+<p><img src="/../pic/image-20240818151857289.png"></p>
+<p>更进一步的，作者通过一些定理与推导，得到：<strong>曲率的正下界</strong>为我们<strong>提供了对 $h_G$ 的控制</strong>，即对图的spectral gap的控制。</p>
+<p><img src="/../pic/image-20240818152203528.png"></p>
+<hr>
+<h3 id="根据Ricci曲率的图结构改造方法"><a href="#根据Ricci曲率的图结构改造方法" class="headerlink" title="根据Ricci曲率的图结构改造方法"></a>根据Ricci曲率的图结构改造方法</h3><p>直观来看，本方法就是干了如下的事：</p>
+<p><img src="/../pic/image-20240818155015913.png"></p>
+<p>伪代码为：</p>
+<p><img src="/../pic/image-20240818152537354.png"></p>
+<p>简单来说，主要做了两件事：</p>
+<ul>
+<li>以添加边后Ricci增益为度量，进行一定概率的加边。大的Ricci曲率增益有更高可能性被添加新边，反之更小概率。</li>
+<li>减少曲率过大的边缘。</li>
+</ul>
+<p>其中 $B_1(i)$ 代表的是到 $i$ 距离小于等于1的点的集合，其实就是<strong>一阶邻居加自己</strong>，核心其实是添加三元环或四元环，这些变量在Ricci曲率计算中起着重要的作用。</p>
+<p>经过这样操作后，大大减少了负曲率的数量，同时减少过大正曲率，让整体曲率分布较为集中。</p>
+<p>从<strong>图结构保存</strong>的角度来讲，主要实现了两点（原文）：</p>
+<ul>
+<li>Theorem 4 tells us how to do the rewiring under such constraints in order to best address the over-squashing: the topological modifications <strong>need to be localized around the most negatively-curved edges</strong>.</li>
+<li>Secondly, we also point out that $Ric(i, j) &lt; −2 + \delta$ implies that $\min\{di, dj\} &gt; 2&#x2F;\delta$. Therefore, if we mostly modify the edge set at those nodes $i, j$ joined by an edge with large negative curvature, then we are perturbing nodes with <strong>high degree where such a change is relatively insignificant</strong>, and thus <strong>overall statistical properties</strong> of the rewired graph such as degree distribution <strong>are likely to be better preserved</strong>.</li>
+</ul>
+<p>从结果上来看，本方法得到的度分布与原图是很像的，并不像其他方法一般大大改变了度的分布。因此这也反映出本方法能够较好的保留原图的信息。</p>
+<p><img src="/../pic/image-20240818154910051.png"></p>
+<hr>
+<h3 id="为什么随机游走方法无法解决瓶颈问题"><a href="#为什么随机游走方法无法解决瓶颈问题" class="headerlink" title="为什么随机游走方法无法解决瓶颈问题"></a>为什么随机游走方法无法解决瓶颈问题</h3><p>随机游走模型为：<br>$$<br>R_{\alpha}:&#x3D;\sum_{k&#x3D;0}^{\infty}\theta_k^{PPR}(D^{-1}A)^k&#x3D;\alpha\sum_{k&#x3D;0}^{\infty}\left((1-\alpha)(D^{-1}A)\right)^k<br>$$<br>其中 $\alpha$ 是停机概率，即当前状态有 $\alpha$ 的可能不继续游走，$1-\alpha$ 的概率继续游走。</p>
+<p>作者此时就用到了之前提到的Cheeger constant。给出游走后的一个上界。</p>
+<p><img src="/../pic/image-20240818154416713.png"></p>
+<p>文章指出这种方法优先在community内部进行加边操作而非community间，这也就代表它不会处理掉瓶颈问题。</p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>图神经网络</tag>
+        <tag>Over-Squashing</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《Residual Entropy-based Graph Generative Algorithms》论文解读</title>
     <url>/2024/08/18/Residual%20Entropy/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://dl.acm.org/doi/10.5555/3535850.3535942">click here</a></p>
-<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是AAMAS 2022中的一片工作。</p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是AAMAS 2022中的一篇工作。</p>
 <p>本篇文章的核心工作为：<strong>设计了一种通过原图构造防御图的算法（非神经网络）</strong>。其意义在于通过对原始graph进行加边处理使得其结构信息更加显著，从而帮助模型更好的学习到structure信息。</p>
 <p>文章通过1-dimensional structure entropy和2-dimensional structure entropy定义出残差熵（Residual Entropy），这个熵反映了图结构所携带的信息——本文希望最大化这个量。</p>
 <p>文章通过残差熵的定义推导出使得残差熵增大的条件，进而根据这个条件对图进行加边处理，旨在提高图的残差熵，从而得到<strong>防御图</strong>。<span id="more"></span></p>
