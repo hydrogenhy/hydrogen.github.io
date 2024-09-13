@@ -41,6 +41,72 @@
       </tags>
   </entry>
   <entry>
+    <title>《Recognizing Predictive Substructures with Subgraph Information Bottleneck》论文解读</title>
+    <url>/2024/09/12/SIB/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://ieeexplore.ieee.org/document/9537601">click here</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是TPAMI 2024中的一篇工作。</p>
+<p>这个论文其实21年就已经发在网上了，24年这个论文和21年的变化基本不大，目测只加了一个图。</p>
+<p>这篇论文目的不是靠信息瓶颈找到一个潜在表示，而是抽象出一个子图结构。<span id="more"></span>整体有着较为完整的推导方式，数学公式很多，有着完备的上下界等等。从实现角度来看，整体网络并不难，远远简单于公式。因此或许这种“意义”+实验好的效果就够了。</p>
+<p>整个方法采用了两阶段优化，具体来说分为了内部和外部两个阶段来进行优化。</p>
+<p>补：这篇论文是前序工作<a href="https://arxiv.org/pdf/2010.05563">Graph Information Bottleneck for Subgraph Recognition</a>的补充，添加了更多理论支撑。</p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240912201303023.png"></p>
+<p>这次我想换个方式进行介绍。本文只介绍其整体思想和能够借鉴的部分，具体内容与推导不在这里说明。</p>
+<p>论文的理论出发点为：</p>
+<p><img src="/../pic/image-20240913140410408.png"></p>
+<p>下面我们从三个Loss入手吧。</p>
+<h4 id="Loss-MI"><a href="#Loss-MI" class="headerlink" title="$Loss_{MI}$"></a>$Loss_{MI}$</h4><p>内层inner optimization是为了考虑<strong>原图和子图之间的互信息</strong>。使用了DONSKER-VARADHAN representation于KL散度中，从而直接将互信息运算转换为一个互信息估计函数 $f_{\varPhi2}$ 的身上。</p>
+<p><img src="/../pic/image-20240913104453602.png"></p>
+<p>那么复杂的问题转换为仅与 $f_{\varPhi2}$ 有关的一个量，这个量就可以通过网络来学了：</p>
+<p><img src="/../pic/image-20240913104716826.png"></p>
+<p>具体流程为：分别用共享参数的GNN获得原图和子图的节点特征表示，进而得到图级别的表示，进而拼接以后经过一层MLP得到互信息估计。</p>
+<p>we design a statistics network based on modern GNN architectures as shown by Fig. 1: first, we use a GNN to extract embeddings from both $G$ and $G_{sub}$ (parameter shared with the subgraph generator, which will be elaborated in Section 4.3), then concatenate $G$ and $G_{sub}$ embeddings and feed them into a Multi-Layer Perceptron (MLP), which finally produces the real number.</p>
+<h4 id="Loss-cls"><a href="#Loss-cls" class="headerlink" title="$Loss_{cls}$"></a>$Loss_{cls}$</h4><p>这个量衡量的是子图与标签之间的互信息。</p>
+<p>文中提到了两个结论，我觉得能够借鉴，同时也降低实现难度：</p>
+<ul>
+<li>maximizing $I(Y; G_{sub})$ is achieved by the minimization of the classification loss between $Y$ and $G_{sub}$ as $L_{cls}$。</li>
+</ul>
+<p><img src="/../pic/image-20240913105319436.png"></p>
+<ul>
+<li>we can reduce the estimating error with large training sets and simple prediction models; the KL term decreases when the variational approximation approaches $p(Y ;G_{sub})$</li>
+</ul>
+<p><img src="/../pic/image-20240913105542200.png"></p>
+<p>整体过程也很好理解，就是GNN后筛选点，而后进行预测。对应绿色的上半部分。</p>
+<p><strong>可能有误：选择节点是直接对原始的emb进行选择，原始emb的邻居都在，但是选择后可能原本的邻居不在了，这就导致子图的emb其实并不是真正子图的emb——因为其用到了被删去的点作为邻居信息聚合</strong>。</p>
+<h4 id="插一嘴，先说子图如何生成"><a href="#插一嘴，先说子图如何生成" class="headerlink" title="插一嘴，先说子图如何生成"></a>插一嘴，先说子图如何生成</h4><p><img src="/../pic/image-20240913112026822.png"></p>
+<p>如图所示，经过GNN后过一个MLP，形成一个 $S \in R^{n\times 2}$ 的矩阵，第 $i$ 行的含义为：<br>$$<br>[p(V_i\in G_{sub}|V_i), p(V_i\in \overline G_{sub}|V_i)]<br>$$<br>用公式来表示的话：</p>
+<p><img src="/../pic/image-20240913140224428.png"></p>
+<p>很好理解。</p>
+<h4 id="双层优化流程"><a href="#双层优化流程" class="headerlink" title="双层优化流程"></a>双层优化流程</h4><p><img src="/../pic/image-20240912201723741.png"></p>
+<p>红色为内层优化，蓝色为外层优化。</p>
+<h4 id="Loss-con"><a href="#Loss-con" class="headerlink" title="$Loss_{con}$"></a>$Loss_{con}$</h4><p>除了IB中的两个Loss，还有一个 $Connectivity\ Loss$——为什么有这个Loss？</p>
+<ul>
+<li>the found subgraph <strong>is supposed to be compact</strong>. Therefore, we propose the following connectivity loss</li>
+</ul>
+<p>Loss定义为：<br>$$<br>L_{con} &#x3D; ||\text{Norm}(S^TAS)-I_2||<br>$$<br>怎么去理解这个呢，不妨我们把这个 $2\times 2$ 的矩阵按照元素看一看：<br>$$<br>a_{11}&#x3D;\sum_{i,j}A_{ij}p(V_i\in G_{sub}|V_i), p(V_i\in G_{sub}|V_j) \\<br>a_{12}&#x3D;\sum_{i,j}A_{ij}p(V_i\in G_{sub}|V_i), p(V_i\in \overline G_{sub}|V_j)<br>$$<br>也就是说，有连边的两个点，最好在一个类别里面——要么都在子图要么都不在。</p>
+<p>最终模型实际上干的是这些事：</p>
+<p><img src="/../pic/image-20240913141113632.png" alt="image-20240913141113632"></p>
+<p>和最开始的IB已经不太像了，虽然仔细想想还是IB的思想——理论与实际的区别啊！</p>
+<hr>
+<h3 id="实验与参数设置"><a href="#实验与参数设置" class="headerlink" title="实验与参数设置"></a>实验与参数设置</h3><p>验实在是太多了，这里放几个我认为比较有意思的实验结果：</p>
+<p>做得实验实在是太多了，这里放几个我认为比较有意思的实验结果：</p>
+<h4 id="提取分子的主要成分："><a href="#提取分子的主要成分：" class="headerlink" title="提取分子的主要成分："></a>提取分子的主要成分：</h4><p><img src="/../pic/image-20240912200859457.png"></p>
+<h4 id="提取三维结构的主要成分"><a href="#提取三维结构的主要成分" class="headerlink" title="提取三维结构的主要成分"></a>提取三维结构的主要成分</h4><p><img src="/../pic/image-20240912201007371.png"></p>
+<h4 id="从线图中恢复出最初的拓扑结构"><a href="#从线图中恢复出最初的拓扑结构" class="headerlink" title="从线图中恢复出最初的拓扑结构"></a>从线图中恢复出最初的拓扑结构</h4><p><img src="/../pic/image-20240912201044503.png"></p>
+<hr>
+<h3 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h3><p>这篇论文充分体现了理论与实际的差别。理论分析的全面，落实到实验上无非就是优化如GNN、MLP网络等等，只不过赋予他们了一定的意义：如互信息估计器、依旧是loss但表示了图和输出的互信息等等。</p>
+<p>那我替换网络模型后是不是就可以用另一套理论去解释呢。</p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>图神经网络</category>
+      </categories>
+      <tags>
+        <tag>信息论</tag>
+        <tag>图神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《Understanding over-squashing and bottlenecks on graphs via curvature》论文浅析</title>
     <url>/2024/08/18/over-squashing%20and%20bottlenecks%20via%20curvature/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>论文传送门：<a href="https://openreview.net/pdf?id=7UmjRGzp-A">click here</a></p>

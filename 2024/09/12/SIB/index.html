@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+       
+      <meta name="keywords" content="课程, code, 生活, 分享" />
+       
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>《Recognizing Predictive Substructures with Subgraph Information Bottleneck》论文解读 |  Hy&#39;s Treasure house</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.net/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<!--浏览器搞笑标题-->
+<script type="text/javascript" src="\js\FunnyTitle.js"></script>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-SIB"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  《Recognizing Predictive Substructures with Subgraph Information Bottleneck》论文解读
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/09/12/SIB/" class="article-date">
+  <time datetime="2024-09-12T11:27:33.000Z" itemprop="datePublished">2024-09-12</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a class="article-category-link" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">4 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>论文传送门：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9537601">click here</a></p>
+<h3 id="论文动机"><a href="#论文动机" class="headerlink" title="论文动机"></a>论文动机</h3><p>本文是TPAMI 2024中的一篇工作。</p>
+<p>这个论文其实21年就已经发在网上了，24年这个论文和21年的变化基本不大，目测只加了一个图。</p>
+<p>这篇论文目的不是靠信息瓶颈找到一个潜在表示，而是抽象出一个子图结构。<span id="more"></span>整体有着较为完整的推导方式，数学公式很多，有着完备的上下界等等。从实现角度来看，整体网络并不难，远远简单于公式。因此或许这种“意义”+实验好的效果就够了。</p>
+<p>整个方法采用了两阶段优化，具体来说分为了内部和外部两个阶段来进行优化。</p>
+<p>补：这篇论文是前序工作<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2010.05563">Graph Information Bottleneck for Subgraph Recognition</a>的补充，添加了更多理论支撑。</p>
+<hr>
+<h3 id="方法论"><a href="#方法论" class="headerlink" title="方法论"></a>方法论</h3><p><img src="/../pic/image-20240912201303023.png"></p>
+<p>这次我想换个方式进行介绍。本文只介绍其整体思想和能够借鉴的部分，具体内容与推导不在这里说明。</p>
+<p>论文的理论出发点为：</p>
+<p><img src="/../pic/image-20240913140410408.png"></p>
+<p>下面我们从三个Loss入手吧。</p>
+<h4 id="Loss-MI"><a href="#Loss-MI" class="headerlink" title="$Loss_{MI}$"></a>$Loss_{MI}$</h4><p>内层inner optimization是为了考虑<strong>原图和子图之间的互信息</strong>。使用了DONSKER-VARADHAN representation于KL散度中，从而直接将互信息运算转换为一个互信息估计函数 $f_{\varPhi2}$ 的身上。</p>
+<p><img src="/../pic/image-20240913104453602.png"></p>
+<p>那么复杂的问题转换为仅与 $f_{\varPhi2}$ 有关的一个量，这个量就可以通过网络来学了：</p>
+<p><img src="/../pic/image-20240913104716826.png"></p>
+<p>具体流程为：分别用共享参数的GNN获得原图和子图的节点特征表示，进而得到图级别的表示，进而拼接以后经过一层MLP得到互信息估计。</p>
+<p>we design a statistics network based on modern GNN architectures as shown by Fig. 1: first, we use a GNN to extract embeddings from both $G$ and $G_{sub}$ (parameter shared with the subgraph generator, which will be elaborated in Section 4.3), then concatenate $G$ and $G_{sub}$ embeddings and feed them into a Multi-Layer Perceptron (MLP), which finally produces the real number.</p>
+<h4 id="Loss-cls"><a href="#Loss-cls" class="headerlink" title="$Loss_{cls}$"></a>$Loss_{cls}$</h4><p>这个量衡量的是子图与标签之间的互信息。</p>
+<p>文中提到了两个结论，我觉得能够借鉴，同时也降低实现难度：</p>
+<ul>
+<li>maximizing $I(Y; G_{sub})$ is achieved by the minimization of the classification loss between $Y$ and $G_{sub}$ as $L_{cls}$。</li>
+</ul>
+<p><img src="/../pic/image-20240913105319436.png"></p>
+<ul>
+<li>we can reduce the estimating error with large training sets and simple prediction models; the KL term decreases when the variational approximation approaches $p(Y ;G_{sub})$</li>
+</ul>
+<p><img src="/../pic/image-20240913105542200.png"></p>
+<p>整体过程也很好理解，就是GNN后筛选点，而后进行预测。对应绿色的上半部分。</p>
+<p><strong>可能有误：选择节点是直接对原始的emb进行选择，原始emb的邻居都在，但是选择后可能原本的邻居不在了，这就导致子图的emb其实并不是真正子图的emb——因为其用到了被删去的点作为邻居信息聚合</strong>。</p>
+<h4 id="插一嘴，先说子图如何生成"><a href="#插一嘴，先说子图如何生成" class="headerlink" title="插一嘴，先说子图如何生成"></a>插一嘴，先说子图如何生成</h4><p><img src="/../pic/image-20240913112026822.png"></p>
+<p>如图所示，经过GNN后过一个MLP，形成一个 $S \in R^{n\times 2}$ 的矩阵，第 $i$ 行的含义为：<br>$$<br>[p(V_i\in G_{sub}|V_i), p(V_i\in \overline G_{sub}|V_i)]<br>$$<br>用公式来表示的话：</p>
+<p><img src="/../pic/image-20240913140224428.png"></p>
+<p>很好理解。</p>
+<h4 id="双层优化流程"><a href="#双层优化流程" class="headerlink" title="双层优化流程"></a>双层优化流程</h4><p><img src="/../pic/image-20240912201723741.png"></p>
+<p>红色为内层优化，蓝色为外层优化。</p>
+<h4 id="Loss-con"><a href="#Loss-con" class="headerlink" title="$Loss_{con}$"></a>$Loss_{con}$</h4><p>除了IB中的两个Loss，还有一个 $Connectivity\ Loss$——为什么有这个Loss？</p>
+<ul>
+<li>the found subgraph <strong>is supposed to be compact</strong>. Therefore, we propose the following connectivity loss</li>
+</ul>
+<p>Loss定义为：<br>$$<br>L_{con} &#x3D; ||\text{Norm}(S^TAS)-I_2||<br>$$<br>怎么去理解这个呢，不妨我们把这个 $2\times 2$ 的矩阵按照元素看一看：<br>$$<br>a_{11}&#x3D;\sum_{i,j}A_{ij}p(V_i\in G_{sub}|V_i), p(V_i\in G_{sub}|V_j) \\<br>a_{12}&#x3D;\sum_{i,j}A_{ij}p(V_i\in G_{sub}|V_i), p(V_i\in \overline G_{sub}|V_j)<br>$$<br>也就是说，有连边的两个点，最好在一个类别里面——要么都在子图要么都不在。</p>
+<p>最终模型实际上干的是这些事：</p>
+<p><img src="/../pic/image-20240913141113632.png" alt="image-20240913141113632"></p>
+<p>和最开始的IB已经不太像了，虽然仔细想想还是IB的思想——理论与实际的区别啊！</p>
+<hr>
+<h3 id="实验与参数设置"><a href="#实验与参数设置" class="headerlink" title="实验与参数设置"></a>实验与参数设置</h3><p>验实在是太多了，这里放几个我认为比较有意思的实验结果：</p>
+<p>做得实验实在是太多了，这里放几个我认为比较有意思的实验结果：</p>
+<h4 id="提取分子的主要成分："><a href="#提取分子的主要成分：" class="headerlink" title="提取分子的主要成分："></a>提取分子的主要成分：</h4><p><img src="/../pic/image-20240912200859457.png"></p>
+<h4 id="提取三维结构的主要成分"><a href="#提取三维结构的主要成分" class="headerlink" title="提取三维结构的主要成分"></a>提取三维结构的主要成分</h4><p><img src="/../pic/image-20240912201007371.png"></p>
+<h4 id="从线图中恢复出最初的拓扑结构"><a href="#从线图中恢复出最初的拓扑结构" class="headerlink" title="从线图中恢复出最初的拓扑结构"></a>从线图中恢复出最初的拓扑结构</h4><p><img src="/../pic/image-20240912201044503.png"></p>
+<hr>
+<h3 id="一些想法"><a href="#一些想法" class="headerlink" title="一些想法"></a>一些想法</h3><p>这篇论文充分体现了理论与实际的差别。理论分析的全面，落实到实验上无非就是优化如GNN、MLP网络等等，只不过赋予他们了一定的意义：如互信息估计器、依旧是loss但表示了图和输出的互信息等等。</p>
+<p>那我替换网络模型后是不是就可以用另一套理论去解释呢。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/09/12/SIB/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E6%81%AF%E8%AE%BA/" rel="tag">信息论</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">图神经网络</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2024/08/18/over-squashing%20and%20bottlenecks%20via%20curvature/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">《Understanding over-squashing and bottlenecks on graphs via curvature》论文浅析</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.staticfile.net/valine/1.4.16/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "YQEs4iho5JeuvvyqTsOIcGUu-gzGzoHsz",
+    app_key: "NJrr8Gl5ULTBNesNuCYYbDYm",
+    path: window.location.pathname,
+    avatar: "retro",
+    placeholder: "期待您的评论！",
+    recordIP: false,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+  
+   
+    <script src="https://cdn.staticfile.net/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runtime Display</title>
+    <style>
+        /* 将运行时间的容器居中并加粗 */
+        #runtime_span {
+            display: block;
+            text-align: center; /* 居中 */
+            font-weight: bold;  /* 加粗 */
+            font-size: 18px;    /* 调整字体大小 */
+        }
+    </style>
+  </head>
+  <span id="runtime_span"></span>
+  <script type="text/javascript">
+  function show_runtime() {
+      window.setTimeout("show_runtime()", 1000);
+      X = new Date("2023/07/16 00:22:00"); // 网站开始运行的日期和时间
+      Y = new Date(); // 当前日期和时间
+      T = (Y.getTime() - X.getTime()); // 网站运行的总毫秒数
+      M = 24 * 60 * 60 * 1000; // 一天的毫秒数
+      a = T / M; // 总天数
+      A = Math.floor(a); // 总天数的整数部分
+      b = (a - A) * 24; // 总小时数
+      B = Math.floor(b); // 总小时数的整数部分
+      c = (b - B) * 60; // 总分钟数
+      C = Math.floor((b - B) * 60); // 总分钟数的整数部分
+      D = Math.floor((c - C) * 60); // 总秒数
+      runtime_span.innerHTML = "⏱️勉强运行 <span class='runtime'>" + A + " 天 " + B + " 小时 " + C + " 分 " + D + " 秒</span>";
+  }
+  show_runtime();
+  </script> 
+  
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> Lucas
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+  
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Hy&#39;s Treasure house"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/self_about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/blog_log">blog日志</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.net/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.net/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.net/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.net/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.net/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.net/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.net/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.staticfile.net/mathjax/2.7.7/MathJax.js"></script>
+<script src="https://cdn.staticfile.net/mathjax/2.7.7/config/TeX-AMS-MML_HTMLorMML-full.js"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+ 
+<script src="/js/clickBoom2.js"></script>
+ 
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.net/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+ 
+<script src="/js/dz.js"></script>
+ 
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":350},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</html>
